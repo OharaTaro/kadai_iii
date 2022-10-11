@@ -56,8 +56,8 @@ SceneBase* SceneMain::update()
 		}
 	}
 
-	// プレイヤーが死んだらタイトルに戻る
-	if (!isExistPlayer())
+	// 敵が全滅orプレイヤーが死んだらタイトルに戻る
+	if (!isExistPlayer() || (getEnemyNum() == 0))
 	{
 		m_endCount++;
 		if (m_endCount >= 180)
@@ -77,6 +77,7 @@ void SceneMain::draw()
 //	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", m_enemy.size());
 //	DrawFormatString(0, 32, GetColor(255, 255, 255), "エフェクトの数:%d", m_particle.size());
 
+	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", getEnemyNum());
 	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
 }
 
@@ -100,7 +101,7 @@ void SceneMain::addEnemyShot(Vec2 pos)
 
 bool SceneMain::isExistPlayer() const
 {
-	for (auto& pObj : m_object)
+	for (const auto& pObj : m_object)
 	{
 		if (pObj->getColType() == ObjectBase::ColType::kPlayer)
 		{
@@ -108,6 +109,19 @@ bool SceneMain::isExistPlayer() const
 		}
 	}
 	return false;
+}
+
+int SceneMain::getEnemyNum() const
+{
+	int result = 0;
+	for (const auto& pObj : m_object)
+	{
+		if (pObj->getColType() == ObjectBase::ColType::kEnemy)
+		{
+			result++;
+		}
+	}
+	return result;
 }
 
 void SceneMain::createParticle(Vec2 pos, int color, int num)

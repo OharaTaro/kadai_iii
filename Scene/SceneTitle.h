@@ -6,23 +6,25 @@ class SceneTitle : public SceneBase
 public:
 	SceneTitle() 
 	{
-		m_textPosY = 0;
-		m_textVecY = 0;
-
-		m_isEnd = false;
+		m_textBlinkFrame = 0;
+		m_fadeBright = 0;
+		m_fadeSpeed = 0;
 	}
 	virtual ~SceneTitle() {}
 
 
 	virtual void init() override;
-	virtual void end() override {}
+	virtual void end() override;
 
 	virtual SceneBase* update() override;
 	virtual void draw() override;
 private:
-	// テキスト表示位置変更
-	int m_textPosY;
-	int m_textVecY;
+	// フェードインorアウト中
+	bool isFading() const;
+private:
+	// テキスト点滅用フレームカウント
+	int m_textBlinkFrame;
 
-	bool m_isEnd;
+	int m_fadeBright;
+	int m_fadeSpeed;
 };

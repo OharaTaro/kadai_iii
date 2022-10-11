@@ -26,6 +26,8 @@ public:
 
 	// プレイヤーいるか	ColType::kPlayerをチェックする
 	bool isExistPlayer() const;
+	// 敵の数取得	ColType::kEnemyをチェックする
+	int getEnemyNum() const;
 
 	// パーティクル生成
 	void createParticle(Vec2 pos, int color, int num);
