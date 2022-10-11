@@ -16,8 +16,6 @@ public:
 
 	// 初期位置の設定
 	void setStart(Vec2 pos);
-//	// ダメージを受けた(プレイヤーの弾に当たった)
-//	void damage();
 	// プレイヤーのたまにぶつかられた時の処理
 	virtual void beHit();
 
@@ -25,5 +23,5 @@ public:
 	virtual ColType getTargetColType() const override { return ColType::kPlayer; }
 
 private:
-	
+	int m_shotInterval;
 };

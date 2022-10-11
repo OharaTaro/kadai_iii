@@ -16,16 +16,19 @@ public:
 	virtual void draw() override;
 
 	// 発射開始
-	void start(Vec2 pos);
-//	// 敵と当たった時の処理
-//	void col(Enemy& target);
+	void startPlayer(Vec2 pos);	// プレイヤーのショット
+	void startEnemy(Vec2 pos);	// 敵のショット
 
 	// 敵にぶつかったときの処理
 	virtual void hit() { m_isExist = false; };
 
-	virtual ColType getColType() const override { return ColType::kPlayerShot; }
-	virtual ColType getTargetColType() const override { return ColType::kEnemy; }
+	virtual ColType getColType() const override { return m_myType; }
+	virtual ColType getTargetColType() const override { return m_targetType; }
 
 private:
 	Vec2	m_vec;
+
+	// 敵に当たる弾かプレイヤーに当たる弾かを設定する
+	ColType	m_myType;
+	ColType	m_targetType;
 };

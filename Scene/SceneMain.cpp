@@ -29,6 +29,8 @@ void SceneMain::init()
 		pEnemy->setStart(pos);
 		m_object.push_back(pEnemy);
 	}
+
+	m_endCount = 0;
 }
 
 void SceneMain::end()
@@ -54,12 +56,15 @@ SceneBase* SceneMain::update()
 		}
 	}
 
-#if false
-	if (Pad::isTrigger(PAD_INPUT_2))
+	// プレイヤーが死んだらタイトルに戻る
+	if (!isExistPlayer())
 	{
-		return (new SceneTitle);
+		m_endCount++;
+		if (m_endCount >= 180)
+		{
+			return (new SceneTitle);
+		}
 	}
-#endif
 	return this;
 }
 
@@ -75,13 +80,34 @@ void SceneMain::draw()
 	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
 }
 
-void SceneMain::addShot(Vec2 pos)
+void SceneMain::addPlayerShot(Vec2 pos)
 {
 	Shot* pShot = new Shot;
 	pShot->init();
 	pShot->setMain(this);
-	pShot->start(pos);
+	pShot->startPlayer(pos);
 	m_object.push_back(pShot);
+}
+
+void SceneMain::addEnemyShot(Vec2 pos)
+{
+	Shot* pShot = new Shot;
+	pShot->init();
+	pShot->setMain(this);
+	pShot->startEnemy(pos);
+	m_object.push_back(pShot);
+}
+
+bool SceneMain::isExistPlayer() const
+{
+	for (auto& pObj : m_object)
+	{
+		if (pObj->getColType() == ObjectBase::ColType::kPlayer)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void SceneMain::createParticle(Vec2 pos, int color, int num)

@@ -13,7 +13,7 @@ namespace
 
 Enemy::Enemy()
 {
-	
+	m_shotInterval = 0;;
 }
 Enemy::~Enemy()
 {
@@ -33,6 +33,12 @@ void Enemy::end()
 void Enemy::update()
 {
 	if (!m_isExist)	return;
+	m_shotInterval--;
+	if (m_shotInterval <= 0)
+	{
+		m_pMain->addEnemyShot(m_pos);
+		m_shotInterval = 120;
+	}
 }
 
 void Enemy::draw()
@@ -48,6 +54,8 @@ void Enemy::setStart(Vec2 pos)
 
 	m_colSize.x = kSize;
 	m_colSize.y = kSize;
+
+	m_shotInterval = 120;
 }
 
 void Enemy::beHit()

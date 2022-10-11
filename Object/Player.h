@@ -17,6 +17,8 @@ public:
 	virtual ColType getColType() const override { return ColType::kPlayer; }
 	virtual ColType getTargetColType() const override { return ColType::kNone; }
 
+	virtual void beHit() override;
+
 private:
 	int		m_shotInterval;
 };

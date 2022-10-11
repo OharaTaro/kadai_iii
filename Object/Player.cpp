@@ -13,6 +13,8 @@ namespace
 	constexpr float kSpeed = 4.0f;
 	// ’e‚Ì”­ŽËŠÔŠu(ƒtƒŒ[ƒ€)
 	constexpr int kShotInterval = 16;
+
+	const int kColor = GetColor(255, 255, 255);
 }
 
 Player::Player()
@@ -32,7 +34,7 @@ void Player::init()
 	m_pos.y = Game::kScreenHeight - 80.0f;
 
 	m_colSize.x = kSize;
-	m_colSize.x = kSize;
+	m_colSize.y = kSize;
 }
 
 void Player::end()
@@ -42,11 +44,13 @@ void Player::end()
 
 void Player::update()
 {
+	if (!m_isExist)	return;
+
 	m_shotInterval++;
 	if( (Pad::isPress(PAD_INPUT_1)) &&
 		(m_shotInterval >= kShotInterval) )
 	{
-		m_pMain->addShot(m_pos);
+		m_pMain->addPlayerShot(m_pos);
 		m_shotInterval = 0;
 	}
 
@@ -70,5 +74,16 @@ void Player::update()
 
 void Player::draw()
 {
-	DrawCircleAA(m_pos.x, m_pos.y, m_colSize.x/2, 32, GetColor(255, 255, 255), true);
+	if (!m_isExist)	return;
+//	DrawCircleAA(m_pos.x, m_pos.y, m_colSize.x/2, 32, GetColor(255, 255, 255), true);
+	DrawBox(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
+}
+
+void Player::beHit()
+{
+	m_isExist = false;
+	Vec2 pos = m_pos;
+	pos.x += m_colSize.x / 2;
+	pos.y += m_colSize.y / 2;
+	m_pMain->createParticle(pos, kColor, 32);
 }
