@@ -1,11 +1,18 @@
 #include "DxLib.h"
 #include "SceneMain.h"
 #include "SceneTitle.h"
+#include "SceneResult.h"
 #include "Pad.h"
 
 #include "Enemy.h"
 #include "Shot.h"
 #include "Particle.h"
+
+namespace
+{
+	// プレイヤー死亡or敵全滅後、タイトルに戻るまでのフレーム数
+	constexpr int kGameEndWaitFrame = 150;
+}
 
 // ===============================================
 
@@ -60,9 +67,12 @@ SceneBase* SceneMain::update()
 	if (!isExistPlayer() || (getEnemyNum() == 0))
 	{
 		m_endCount++;
-		if (m_endCount >= 180)
+		if (m_endCount >= kGameEndWaitFrame)
 		{
-			return (new SceneTitle);
+		//	return (new SceneTitle);
+			SceneResult* pResult = new SceneResult;
+			pResult->setResult(isExistPlayer(), 24 - getEnemyNum());
+			return pResult;
 		}
 	}
 	return this;
