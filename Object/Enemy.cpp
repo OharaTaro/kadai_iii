@@ -1,0 +1,60 @@
+#include "Enemy.h"
+#include "../game.h"
+#include "DxLib.h"
+#include "Pad.h"
+
+#include "SceneMain.h"
+
+namespace
+{
+	constexpr int kSize = 32;
+	const int kColor = GetColor(255,0,0);
+}
+
+Enemy::Enemy()
+{
+	
+}
+Enemy::~Enemy()
+{
+
+}
+
+void Enemy::init()
+{
+	
+}
+
+void Enemy::end()
+{
+
+}
+
+void Enemy::update()
+{
+	if (!m_isExist)	return;
+}
+
+void Enemy::draw()
+{
+	if (!m_isExist)	return;
+	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
+}
+
+void Enemy::setStart(Vec2 pos)
+{
+	m_isExist = true;
+	m_pos = pos;
+
+	m_colSize.x = kSize;
+	m_colSize.y = kSize;
+}
+
+void Enemy::beHit()
+{
+	m_isExist = false;
+	Vec2 pos = m_pos;
+	pos.x += m_colSize.x / 2;
+	pos.y += m_colSize.y / 2;
+	m_pMain->createParticle(pos, kColor, 32);
+}
