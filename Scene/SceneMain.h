@@ -1,7 +1,8 @@
 #pragma once
 #include "SceneBase.h"
 #include "Vec2.h"
-#include <vector>
+//#include <vector>
+#include <list>
 #include "Player.h"
 
 class SceneMain : public SceneBase
@@ -26,13 +27,11 @@ public:
 	void createParticle(Vec2 pos, int color, int num);
 
 private:
-	// vector<ObjectBase*>‚Ö‚ÌŠeˆ—
-	void updateObject(std::vector<ObjectBase*>& obj);
-	void drawObject(std::vector<ObjectBase*>& obj);
-	void endObject(std::vector<ObjectBase*>& obj);
+	// list<ObjectBase*>‚Ö‚ÌŠeˆ—
+	void updateObject(std::list<ObjectBase*>& obj);
+	void drawObject(std::list<ObjectBase*>& obj);
+	void endObject(std::list<ObjectBase*>& obj);
+
 private:
-	Player	m_player;
-	std::vector<ObjectBase*>	m_enemy;
-	std::vector<ObjectBase*>	m_shot;
-	std::vector<ObjectBase*>	m_particle;
+	std::list<ObjectBase*>	m_object;
 };

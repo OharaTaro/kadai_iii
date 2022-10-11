@@ -11,8 +11,12 @@
 
 void SceneMain::init()
 {
-	m_player.init();
-	m_player.setMain(this);
+	{
+		Player* pPlayer = new Player;
+		pPlayer->init();
+		pPlayer->setMain(this);
+		m_object.push_back(pPlayer);
+	}
 	for (int i = 0; i < 24; i++)
 	{
 		Enemy* pEnemy = new Enemy;
@@ -23,35 +27,29 @@ void SceneMain::init()
 		pos.x = static_cast<float>( (i % 8) * 64 + 90 );
 		pos.y = static_cast<float>( (i / 8) * 64 + 60 );
 		pEnemy->setStart(pos);
-		m_enemy.push_back(pEnemy);
+		m_object.push_back(pEnemy);
 	}
 }
 
 void SceneMain::end()
 {
-	m_player.end();
-	endObject(m_enemy);
-	endObject(m_shot);
-	endObject(m_particle);
+	endObject(m_object);
 }
 
 SceneBase* SceneMain::update()
 {
 	// 各オブジェクトの処理
-	m_player.update();
-	updateObject(m_enemy);
-	updateObject(m_shot);
-	updateObject(m_particle);
+	updateObject(m_object);
 
 	// 当たり判定
-	for (auto& shot : m_shot)
+	for (auto& hitObj : m_object)
 	{
-		for (auto& enemy : m_enemy)
+		for (auto& beHitObj : m_object)
 		{
-			if (shot->isCol(*enemy))
+			if (hitObj->isCol(*beHitObj))
 			{
-				shot->hit();
-				enemy->beHit();
+				hitObj->hit();
+				beHitObj->beHit();
 			}
 		}
 	}
@@ -67,15 +65,14 @@ SceneBase* SceneMain::update()
 
 void SceneMain::draw()
 {
-	m_player.draw();
-	drawObject(m_particle);
-	drawObject(m_shot);
-	drawObject(m_enemy);
+	drawObject(m_object);
 
 	// デバッグ表示
-	DrawFormatString(0,  0, GetColor(255, 255, 255), "弾の数:%d", m_shot.size());
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", m_enemy.size());
-	DrawFormatString(0, 32, GetColor(255, 255, 255), "エフェクトの数:%d", m_particle.size());
+//	DrawFormatString(0,  0, GetColor(255, 255, 255), "弾の数:%d", m_shot.size());
+//	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", m_enemy.size());
+//	DrawFormatString(0, 32, GetColor(255, 255, 255), "エフェクトの数:%d", m_particle.size());
+
+	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
 }
 
 void SceneMain::addShot(Vec2 pos)
@@ -84,7 +81,7 @@ void SceneMain::addShot(Vec2 pos)
 	pShot->init();
 	pShot->setMain(this);
 	pShot->start(pos);
-	m_shot.push_back(pShot);
+	m_object.push_back(pShot);
 }
 
 void SceneMain::createParticle(Vec2 pos, int color, int num)
@@ -95,13 +92,13 @@ void SceneMain::createParticle(Vec2 pos, int color, int num)
 		pPart->init();
 		pPart->setMain(this);
 		pPart->start(pos, color);
-		m_particle.push_back(pPart);
+		m_object.push_back(pPart);
 	}
 }
 
-void SceneMain::updateObject(std::vector<ObjectBase*>& obj)
+void SceneMain::updateObject(std::list<ObjectBase*>& obj)
 {
-	std::vector<ObjectBase*>::iterator it = obj.begin();
+	std::list<ObjectBase*>::iterator it = obj.begin();
 	while (it != obj.end())
 	{
 		auto pObj = (*it);
@@ -117,14 +114,14 @@ void SceneMain::updateObject(std::vector<ObjectBase*>& obj)
 		}
 	}
 }
-void SceneMain::drawObject(std::vector<ObjectBase*>& obj)
+void SceneMain::drawObject(std::list<ObjectBase*>& obj)
 {
 	for (auto& pObj : obj)
 	{
 		pObj->draw();
 	}
 }
-void SceneMain::endObject(std::vector<ObjectBase*>& obj)
+void SceneMain::endObject(std::list<ObjectBase*>& obj)
 {
 	for (auto& pObj : obj)
 	{
