@@ -76,12 +76,12 @@ void SceneResult::draw()
 
 	if (m_isSuccess)
 	{
-		int width = GetDrawStringWidth(kSuccessText, strlen(kSuccessText));
+		int width = GetDrawStringWidth(kSuccessText, static_cast<int>(strlen(kSuccessText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kSuccessText, GetColor(255, 255, 255));
 	}
 	else
 	{
-		int width = GetDrawStringWidth(kFailText, strlen(kFailText));
+		int width = GetDrawStringWidth(kFailText, static_cast<int>(strlen(kFailText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kFailText, GetColor(255, 255, 255));
 
 		DrawFormatString(Game::kScreenWidth / 2 - width / 2, 196, GetColor(255, 255, 255), kScoreText, m_destroyNum);
@@ -90,7 +90,7 @@ void SceneResult::draw()
 
 	if (m_textBlinkFrame < kTextDispFrame)
 	{
-		int width = GetDrawStringWidth(kGuideText, strlen(kGuideText));
+		int width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
 	}
 }

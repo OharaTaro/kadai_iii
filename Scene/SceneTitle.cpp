@@ -72,12 +72,12 @@ void SceneTitle::draw()
 {
 	SetDrawBright(m_fadeBright, m_fadeBright, m_fadeBright);
 
-	int width = GetDrawStringWidth(kTitleText, strlen(kTitleText));
+	int width = GetDrawStringWidth(kTitleText, static_cast<int>(strlen(kTitleText)));
 	DrawString(Game::kScreenWidth/2 - width/2, 180, kTitleText,GetColor(255,255,255));
 
 	if (m_textBlinkFrame < kTextDispFrame)
 	{
-		width = GetDrawStringWidth(kGuideText, strlen(kGuideText));
+		width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
 	}
 }

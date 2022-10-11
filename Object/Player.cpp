@@ -76,7 +76,7 @@ void Player::draw()
 {
 	if (!m_isExist)	return;
 //	DrawCircleAA(m_pos.x, m_pos.y, m_colSize.x/2, 32, GetColor(255, 255, 255), true);
-	DrawBox(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
+	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
 }
 
 void Player::beHit()
