@@ -12,6 +12,8 @@ namespace
 {
 	// プレイヤー死亡or敵全滅後、タイトルに戻るまでのフレーム数
 	constexpr int kGameEndWaitFrame = 150;
+	// 敵の数
+	constexpr int kEnemyNum = 24;
 }
 
 // ===============================================
@@ -24,7 +26,7 @@ void SceneMain::init()
 		pPlayer->setMain(this);
 		m_object.push_back(pPlayer);
 	}
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < kEnemyNum; i++)
 	{
 		Enemy* pEnemy = new Enemy;
 
@@ -69,9 +71,9 @@ SceneBase* SceneMain::update()
 		m_endCount++;
 		if (m_endCount >= kGameEndWaitFrame)
 		{
-		//	return (new SceneTitle);
+			// 結果表示画面へ	ゲーム結果もここで渡しておく
 			SceneResult* pResult = new SceneResult;
-			pResult->setResult(isExistPlayer(), 24 - getEnemyNum());
+			pResult->setResult(isExistPlayer(), kEnemyNum - getEnemyNum());
 			return pResult;
 		}
 	}
