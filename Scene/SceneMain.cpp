@@ -21,10 +21,13 @@ namespace
 
 void SceneMain::init()
 {
+	m_hPlayer = LoadGraph("Data/player.png");
+
 	{
 		Player* pPlayer = new Player;
 		pPlayer->init();
 		pPlayer->setMain(this);
+		pPlayer->setGraph(m_hPlayer);
 		m_object.push_back(pPlayer);
 	}
 	for (int i = 0; i < kEnemyNum; i++)
@@ -46,6 +49,7 @@ void SceneMain::init()
 void SceneMain::end()
 {
 	endObject(m_object);
+	DeleteGraph(m_hPlayer);
 }
 
 SceneBase* SceneMain::update()

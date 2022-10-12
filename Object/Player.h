@@ -17,11 +17,20 @@ public:
 	virtual ColType getColType() const override { return ColType::kPlayer; }
 	virtual ColType getTargetColType() const override { return ColType::kNone; }
 
+	// グラフィックデータ設定
+	void setGraph(int handle) { m_hGraph = handle; }
+
 	// 敵の弾が当たったときの処理
 	virtual void beHit() override;
 	// 弾発射位置の取得
 	Vec2 getShotStartPos() const;
 
 private:
+	// グラフィックハンドル
+	int		m_hGraph;
+	// アニメーション
+	int		m_animFrameCount;
+
+	// ショットの発射間隔
 	int		m_shotInterval;
 };

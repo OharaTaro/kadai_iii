@@ -15,10 +15,15 @@ namespace
 	constexpr int kShotInterval = 16;
 
 	const int kColor = GetColor(255, 255, 255);
+
+	// アニメーション情報
+	constexpr int kAnimNum = 2;		// アニメのコマ数
+	constexpr int kAnimFrame = 4;	// １コマ当たりのフレーム数
 }
 
 Player::Player()
 {
+	m_hGraph = -1;
 	m_shotInterval = 0;
 }
 Player::~Player()
@@ -46,6 +51,14 @@ void Player::update()
 {
 	if (!m_isExist)	return;
 
+	// プレイヤーアニメーション
+	m_animFrameCount++;
+	if (m_animFrameCount >= kAnimNum * kAnimFrame)
+	{
+		m_animFrameCount = 0;
+	}
+
+	// ショット生成
 	m_shotInterval++;
 	if( (Pad::isPress(PAD_INPUT_1)) &&
 		(m_shotInterval >= kShotInterval) )
@@ -54,6 +67,7 @@ void Player::update()
 		m_shotInterval = 0;
 	}
 
+	// 移動
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
 		m_pos.x -= kSpeed;
@@ -75,8 +89,13 @@ void Player::update()
 void Player::draw()
 {
 	if (!m_isExist)	return;
-//	DrawCircleAA(m_pos.x, m_pos.y, m_colSize.x/2, 32, GetColor(255, 255, 255), true);
-	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
+	
+	int animNo = m_animFrameCount / kAnimFrame;
+	DrawRectGraph(m_pos.x, m_pos.y,
+				animNo * kSize, 96, kSize, kSize,
+				m_hGraph, true, false);
+	// 当たり判定表示
+//	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, false);
 }
 
 void Player::beHit()

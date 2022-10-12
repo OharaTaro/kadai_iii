@@ -10,6 +10,7 @@ class SceneMain : public SceneBase
 public:
 	SceneMain()
 	{
+		m_hPlayer = -1;
 		m_endCount = 0;
 	}
 	virtual ~SceneMain() {}
@@ -43,10 +44,12 @@ private:
 	void drawObject(std::list<ObjectBase*>& obj);
 	void endObject(std::list<ObjectBase*>& obj);
 
-	
-
 private:
-	std::list<ObjectBase*>	m_object;
+	// グラフィックハンドル
+	int m_hPlayer;
 
+	// ゲーム中に登場する物体
+	std::list<ObjectBase*>	m_object;
+	// ゲーム終了後のフレーム待ち
 	int m_endCount;
 };
