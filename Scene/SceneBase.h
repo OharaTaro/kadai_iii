@@ -4,7 +4,7 @@
 class SceneBase
 {
 public:
-	SceneBase() {}
+	SceneBase();
 	virtual ~SceneBase() {}
 
 
@@ -13,4 +13,18 @@ public:
 
 	virtual SceneBase* update() { return this; }
 	virtual void draw() {}
+
+	// フェード関連
+	void updateFade();
+	void drawFade() const;
+	bool isFadingIn() const;	// フェードイン中
+	bool isFadingOut() const;	// フェードアウト中
+	// フェードインorアウト中
+	bool isFading() const { return isFadingIn() || isFadingOut(); }
+
+private:
+	// フェード関連処理
+	int m_fadeColor;
+	int m_fadeBright;
+	int m_fadeSpeed;
 };
