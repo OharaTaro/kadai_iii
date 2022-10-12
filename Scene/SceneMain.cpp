@@ -116,6 +116,24 @@ void SceneMain::addEnemyShot(Vec2 pos)
 	m_object.push_back(pShot);
 }
 
+bool SceneMain::isEnemyShotEnable(Vec2 shotStartPos)
+{
+	for (const auto& pObj : m_object)
+	{
+		if (pObj->getColType() == ObjectBase::ColType::kEnemy)
+		{
+			// 発射位置よりも上にいる敵は気にしない
+			if (shotStartPos.y > pObj->getTop())	continue;
+			// 左右位置がずれている敵は気にしない
+			if (shotStartPos.x > pObj->getRight())	continue;
+			if (shotStartPos.x < pObj->getLeft())	continue;
+			// それ以外は弾の射線上にいるので撃たない
+			return false;
+		}
+	}
+	return true;
+}
+
 bool SceneMain::isExistPlayer() const
 {
 	for (const auto& pObj : m_object)

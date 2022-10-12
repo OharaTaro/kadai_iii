@@ -13,7 +13,7 @@ namespace
 
 Enemy::Enemy()
 {
-	m_shotInterval = 0;;
+	m_shotInterval = 0;
 }
 Enemy::~Enemy()
 {
@@ -36,7 +36,10 @@ void Enemy::update()
 	m_shotInterval--;
 	if (m_shotInterval <= 0)
 	{
-		m_pMain->addEnemyShot(getShotStartPos());
+		if (m_pMain->isEnemyShotEnable(getShotStartPos()))
+		{
+			m_pMain->addEnemyShot(getShotStartPos());
+		}
 		m_shotInterval = 120;
 	}
 }

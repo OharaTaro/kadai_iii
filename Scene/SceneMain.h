@@ -21,8 +21,13 @@ public:
 	virtual SceneBase* update() override;
 	virtual void draw() override;
 
+	// プレイヤーのショット生成
 	void addPlayerShot( Vec2 pos );
-	void addEnemyShot(Vec2 pos);
+	// 敵のショット生成
+	void addEnemyShot( Vec2 pos );
+
+	// 敵のショット撃っていいか	射線上に他の敵がいる場合は撃たない
+	bool isEnemyShotEnable(Vec2 shotStartPos);
 
 	// プレイヤーいるか	ColType::kPlayerをチェックする
 	bool isExistPlayer() const;
