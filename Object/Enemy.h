@@ -16,15 +16,24 @@ public:
 
 	// 初期位置の設定
 	void setStart(Vec2 pos);
+	// グラフィックデータ設定
+	void setGraph(int handle) { m_hGraph = handle; }
+
 	// プレイヤーのたまにぶつかられた時の処理
 	virtual void beHit();
 
 	virtual ColType getColType() const override { return ColType::kEnemy; }
 	virtual ColType getTargetColType() const override { return ColType::kPlayer; }
 
+
 	// 弾発射位置の取得
 	Vec2 getShotStartPos() const;
 
 private:
+	// グラフィックハンドル
+	int		m_hGraph;
+	// アニメーション
+	int		m_animFrameCount;
+
 	int m_shotInterval;
 };

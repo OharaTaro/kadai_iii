@@ -24,6 +24,7 @@ namespace
 Player::Player()
 {
 	m_hGraph = -1;
+	m_animFrameCount = 0;
 	m_shotInterval = 0;
 }
 Player::~Player()

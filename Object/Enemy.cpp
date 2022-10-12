@@ -9,10 +9,17 @@ namespace
 {
 	constexpr int kSize = 32;
 	const int kColor = GetColor(255,0,0);
+
+	// アニメーション情報
+	constexpr int kAnimNum = 4;		// アニメのコマ数
+	constexpr int kAnimNo[kAnimNum] = { 0, 1, 2,1 };
+	constexpr int kAnimFrame = 8;	// １コマ当たりのフレーム数
 }
 
 Enemy::Enemy()
 {
+	m_hGraph = -1;
+	m_animFrameCount = 0;
 	m_shotInterval = 0;
 }
 Enemy::~Enemy()
@@ -33,6 +40,13 @@ void Enemy::end()
 void Enemy::update()
 {
 	if (!m_isExist)	return;
+	// アニメーション
+	m_animFrameCount++;
+	if (m_animFrameCount >= kAnimNum * kAnimFrame)
+	{
+		m_animFrameCount = 0;
+	}
+	// 一定間隔でショットを撃つ
 	m_shotInterval--;
 	if (m_shotInterval <= 0)
 	{
@@ -47,7 +61,15 @@ void Enemy::update()
 void Enemy::draw()
 {
 	if (!m_isExist)	return;
-	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, true);
+
+	int animIndex = m_animFrameCount / kAnimFrame;
+	int animNo = kAnimNo[animIndex];
+	DrawRectGraph(m_pos.x, m_pos.y,
+		animNo * kSize, 0, kSize, kSize,
+		m_hGraph, true, false);
+
+	// 当たり判定表示
+//	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, kColor, false);
 }
 
 void Enemy::setStart(Vec2 pos)

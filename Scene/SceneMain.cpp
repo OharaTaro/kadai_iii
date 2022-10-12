@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "game.h"
 #include "SceneMain.h"
 #include "SceneTitle.h"
 #include "SceneResult.h"
@@ -10,6 +11,9 @@
 
 namespace
 {
+	// 背景色
+	const int kBgColor = GetColor(160, 216, 239);
+
 	// プレイヤー死亡or敵全滅後、タイトルに戻るまでのフレーム数
 	constexpr int kGameEndWaitFrame = 150;
 	constexpr int kGameEndFadeOutStartFrame = 120;
@@ -22,6 +26,8 @@ namespace
 void SceneMain::init()
 {
 	m_hPlayer = LoadGraph("Data/player.png");
+	m_hEnemy = LoadGraph("Data/enemy00.png");
+	m_hBg = LoadGraph("Data/bg.png");
 
 	{
 		Player* pPlayer = new Player;
@@ -36,6 +42,7 @@ void SceneMain::init()
 
 		pEnemy->init();
 		pEnemy->setMain(this);
+		pEnemy->setGraph(m_hEnemy);
 		Vec2 pos;
 		pos.x = static_cast<float>( (i % 8) * 64 + 90 );
 		pos.y = static_cast<float>( (i / 8) * 64 + 60 );
@@ -43,6 +50,7 @@ void SceneMain::init()
 		m_object.push_back(pEnemy);
 	}
 
+	m_bgScroll = 0.0f;
 	m_endCount = 0;
 }
 
@@ -50,12 +58,20 @@ void SceneMain::end()
 {
 	endObject(m_object);
 	DeleteGraph(m_hPlayer);
+	DeleteGraph(m_hEnemy);
+	DeleteGraph(m_hBg);
 }
 
 SceneBase* SceneMain::update()
 {
 	SceneBase::updateFade();
 	if (isFading())	return this;	// フェードイン、アウト中は動かない
+	// 背景のスクロール
+	m_bgScroll += 1.0f;
+	if (m_bgScroll > Game::kScreenHeight)
+	{
+		m_bgScroll -= Game::kScreenHeight;
+	}
 
 	// 各オブジェクトの処理
 	updateObject(m_object);
@@ -94,6 +110,13 @@ SceneBase* SceneMain::update()
 
 void SceneMain::draw()
 {
+	// 背景色
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, kBgColor, true);
+
+	// 背景
+	DrawGraphF(0, m_bgScroll, m_hBg, true);
+	DrawGraphF(0, m_bgScroll - Game::kScreenHeight , m_hBg, true);
+
 	drawObject(m_object);
 
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", getEnemyNum());

@@ -11,6 +11,9 @@ public:
 	SceneMain()
 	{
 		m_hPlayer = -1;
+		m_hEnemy = -1;
+		m_hBg = -1;
+		m_bgScroll = 0.0f;
 		m_endCount = 0;
 	}
 	virtual ~SceneMain() {}
@@ -47,9 +50,13 @@ private:
 private:
 	// グラフィックハンドル
 	int m_hPlayer;
+	int m_hEnemy;
+	int m_hBg;
 
 	// ゲーム中に登場する物体
 	std::list<ObjectBase*>	m_object;
+	// 背景のスクロール
+	float m_bgScroll;
 	// ゲーム終了後のフレーム待ち
 	int m_endCount;
 };
