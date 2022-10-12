@@ -50,7 +50,7 @@ void Player::update()
 	if( (Pad::isPress(PAD_INPUT_1)) &&
 		(m_shotInterval >= kShotInterval) )
 	{
-		m_pMain->addPlayerShot(m_pos);
+		m_pMain->addPlayerShot(getShotStartPos());
 		m_shotInterval = 0;
 	}
 
@@ -86,4 +86,11 @@ void Player::beHit()
 	pos.x += m_colSize.x / 2;
 	pos.y += m_colSize.y / 2;
 	m_pMain->createParticle(pos, kColor, 32);
+}
+
+Vec2 Player::getShotStartPos() const
+{
+	Vec2 result = m_pos;
+	result.x += m_colSize.x / 2.0f;
+	return result;
 }

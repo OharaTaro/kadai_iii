@@ -60,13 +60,15 @@ void Shot::draw()
 	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, GetColor(0, 0, 255), true);
 }
 
-void Shot::startPlayer(Vec2 pos)
+void Shot::startPlayer(Vec2 centerPos)
 {
 	m_isExist = true;
-	m_pos = pos;
+	m_pos = centerPos;
 
 	m_colSize.x = kSize;
 	m_colSize.y = kSize;
+
+	m_pos -= m_colSize / 2;
 
 	m_vec.x = 0.0f;
 	m_vec.y = kSpeed;
@@ -75,13 +77,15 @@ void Shot::startPlayer(Vec2 pos)
 	m_targetType = ColType::kEnemy;
 }
 
-void Shot::startEnemy(Vec2 pos)
+void Shot::startEnemy(Vec2 centerPos)
 {
 	m_isExist = true;
-	m_pos = pos;
+	m_pos = centerPos;
 
 	m_colSize.x = kSize;
 	m_colSize.y = kSize;
+
+	m_pos -= m_colSize / 2;
 
 	m_vec.x = 0.0f;
 	m_vec.y = -kSpeed;

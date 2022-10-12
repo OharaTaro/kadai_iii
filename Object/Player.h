@@ -17,7 +17,10 @@ public:
 	virtual ColType getColType() const override { return ColType::kPlayer; }
 	virtual ColType getTargetColType() const override { return ColType::kNone; }
 
+	// “G‚Ì’e‚ª“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
 	virtual void beHit() override;
+	// ’e”­ËˆÊ’u‚Ìæ“¾
+	Vec2 getShotStartPos() const;
 
 private:
 	int		m_shotInterval;

@@ -15,9 +15,9 @@ public:
 	virtual void update() override;
 	virtual void draw() override;
 
-	// 発射開始
-	void startPlayer(Vec2 pos);	// プレイヤーのショット
-	void startEnemy(Vec2 pos);	// 敵のショット
+	// 発射開始	中心位置指定
+	void startPlayer(Vec2 centerPos);	// プレイヤーのショット
+	void startEnemy(Vec2 centerPos);	// 敵のショット
 
 	// 敵にぶつかったときの処理
 	virtual void hit() { m_isExist = false; };

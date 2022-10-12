@@ -36,7 +36,7 @@ void Enemy::update()
 	m_shotInterval--;
 	if (m_shotInterval <= 0)
 	{
-		m_pMain->addEnemyShot(m_pos);
+		m_pMain->addEnemyShot(getShotStartPos());
 		m_shotInterval = 120;
 	}
 }
@@ -65,4 +65,12 @@ void Enemy::beHit()
 	pos.x += m_colSize.x / 2;
 	pos.y += m_colSize.y / 2;
 	m_pMain->createParticle(pos, kColor, 32);
+}
+
+Vec2 Enemy::getShotStartPos() const
+{
+	Vec2 result = m_pos;
+	result.x += m_colSize.x / 2.0f;
+	result.y += m_colSize.y;
+	return result;
 }

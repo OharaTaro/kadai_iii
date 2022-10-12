@@ -22,6 +22,9 @@ public:
 	virtual ColType getColType() const override { return ColType::kEnemy; }
 	virtual ColType getTargetColType() const override { return ColType::kPlayer; }
 
+	// ’e”­ŽËˆÊ’u‚ÌŽæ“¾
+	Vec2 getShotStartPos() const;
+
 private:
 	int m_shotInterval;
 };
