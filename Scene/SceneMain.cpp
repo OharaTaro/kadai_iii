@@ -12,6 +12,7 @@ namespace
 {
 	// プレイヤー死亡or敵全滅後、タイトルに戻るまでのフレーム数
 	constexpr int kGameEndWaitFrame = 150;
+	constexpr int kGameEndFadeOutStartFrame = 120;
 	// 敵の数
 	constexpr int kEnemyNum = 24;
 }
@@ -49,6 +50,9 @@ void SceneMain::end()
 
 SceneBase* SceneMain::update()
 {
+	SceneBase::updateFade();
+	if (isFading())	return this;	// フェードイン、アウト中は動かない
+
 	// 各オブジェクトの処理
 	updateObject(m_object);
 
@@ -69,6 +73,10 @@ SceneBase* SceneMain::update()
 	if (!isExistPlayer() || (getEnemyNum() == 0))
 	{
 		m_endCount++;
+		if( (!isFading()) && (m_endCount >= kGameEndFadeOutStartFrame) )
+		{
+			startFadeOut();
+		}
 		if (m_endCount >= kGameEndWaitFrame)
 		{
 			// 結果表示画面へ	ゲーム結果もここで渡しておく
@@ -84,13 +92,10 @@ void SceneMain::draw()
 {
 	drawObject(m_object);
 
-	// デバッグ表示
-//	DrawFormatString(0,  0, GetColor(255, 255, 255), "弾の数:%d", m_shot.size());
-//	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", m_enemy.size());
-//	DrawFormatString(0, 32, GetColor(255, 255, 255), "エフェクトの数:%d", m_particle.size());
-
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", getEnemyNum());
 	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
+
+	SceneBase::drawFade();
 }
 
 void SceneMain::addPlayerShot(Vec2 pos)

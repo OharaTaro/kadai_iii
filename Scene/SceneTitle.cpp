@@ -7,9 +7,6 @@
 
 namespace
 {
-	// フェードインアウト速度
-	constexpr int kFadeSpeed = 8;
-
 	// 表示する文字列
 	const char* const kTitleText = "インベーダー風ゲーム";
 	const char* const kGuideText = "1ボタンを押してください";
@@ -21,34 +18,23 @@ namespace
 void SceneTitle::init()
 {
 	m_textBlinkFrame = 0;
-	m_fadeBright = 0;
-	m_fadeSpeed = kFadeSpeed;
 }
 
 void SceneTitle::end()
 {
-	SetDrawBright(255, 255, 255);
+	
 }
 
 SceneBase* SceneTitle::update()
 {
-	if( isFading() )
+	if(isFading())
 	{
-		m_fadeBright += m_fadeSpeed;
-		if (m_fadeBright <= 0)
+		bool isOut = isFadingOut();
+		SceneBase::updateFade();
+		// フェードアウト終了時にシーン切り替え
+		if (!isFading() && isOut)
 		{
-			if (m_fadeSpeed < 0)
-			{
-				// Mainに切り替え
-				return (new SceneMain);
-			}
-			m_fadeBright = 0;
-			m_fadeSpeed = 0;
-		}
-		if (m_fadeBright >= 255)
-		{
-			m_fadeBright = 255;
-			m_fadeSpeed = 0;
+			return (new SceneMain);
 		}
 	}
 	// テキストの点滅
@@ -62,7 +48,7 @@ SceneBase* SceneTitle::update()
 		if (Pad::isTrigger(PAD_INPUT_1))
 		{
 			// フェードアウト開始
-			m_fadeSpeed = -kFadeSpeed;
+			startFadeOut();
 		}
 	}
 	return this;
@@ -70,8 +56,6 @@ SceneBase* SceneTitle::update()
 
 void SceneTitle::draw()
 {
-	SetDrawBright(m_fadeBright, m_fadeBright, m_fadeBright);
-
 	int width = GetDrawStringWidth(kTitleText, static_cast<int>(strlen(kTitleText)));
 	DrawString(Game::kScreenWidth/2 - width/2, 180, kTitleText,GetColor(255,255,255));
 
@@ -80,9 +64,6 @@ void SceneTitle::draw()
 		width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
 	}
-}
 
-bool SceneTitle::isFading() const
-{
-	return (m_fadeSpeed != 0);
+	SceneBase::drawFade();
 }

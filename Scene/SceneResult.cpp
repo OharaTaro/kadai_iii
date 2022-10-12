@@ -7,9 +7,6 @@
 
 namespace
 {
-	// フェードインアウト速度
-	constexpr int kFadeSpeed = 8;
-
 	// 表示する文字列
 	const char* const kSuccessText = "作戦成功";
 	const char* const kFailText = "作戦失敗";
@@ -23,8 +20,6 @@ namespace
 void SceneResult::init()
 {
 	m_textBlinkFrame = 0;
-	m_fadeBright = 0;
-	m_fadeSpeed = kFadeSpeed;
 }
 
 void SceneResult::end()
@@ -34,23 +29,14 @@ void SceneResult::end()
 
 SceneBase* SceneResult::update()
 {
-	if( isFading() )
+	if (isFading())
 	{
-		m_fadeBright += m_fadeSpeed;
-		if (m_fadeBright <= 0)
+		bool isOut = isFadingOut();
+		SceneBase::updateFade();
+		// フェードアウト終了時にシーン切り替え
+		if (!isFading() && isOut)
 		{
-			if (m_fadeSpeed < 0)
-			{
-				// Mainに切り替え
-				return (new SceneTitle);
-			}
-			m_fadeBright = 0;
-			m_fadeSpeed = 0;
-		}
-		if (m_fadeBright >= 255)
-		{
-			m_fadeBright = 255;
-			m_fadeSpeed = 0;
+			return (new SceneTitle);
 		}
 	}
 	// テキストの点滅
@@ -64,7 +50,7 @@ SceneBase* SceneResult::update()
 		if (Pad::isTrigger(PAD_INPUT_1))
 		{
 			// フェードアウト開始
-			m_fadeSpeed = -kFadeSpeed;
+			startFadeOut();
 		}
 	}
 	return this;
@@ -72,8 +58,6 @@ SceneBase* SceneResult::update()
 
 void SceneResult::draw()
 {
-	SetDrawBright(m_fadeBright, m_fadeBright, m_fadeBright);
-
 	if (m_isSuccess)
 	{
 		int width = GetDrawStringWidth(kSuccessText, static_cast<int>(strlen(kSuccessText)));
@@ -86,22 +70,18 @@ void SceneResult::draw()
 
 		DrawFormatString(Game::kScreenWidth / 2 - width / 2, 196, GetColor(255, 255, 255), kScoreText, m_destroyNum);
 	}
-	
 
 	if (m_textBlinkFrame < kTextDispFrame)
 	{
 		int width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
 		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
 	}
+
+	SceneBase::drawFade();
 }
 
 void SceneResult::setResult(bool isWin, int destroyNum)
 {
 	m_isSuccess = isWin;
 	m_destroyNum = destroyNum;
-}
-
-bool SceneResult::isFading() const
-{
-	return (m_fadeSpeed != 0);
 }

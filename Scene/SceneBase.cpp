@@ -55,3 +55,8 @@ bool SceneBase::isFadingOut() const
 	if (m_fadeSpeed > 0)	return true;
 	return false;
 }
+
+void SceneBase::startFadeOut()
+{
+	m_fadeSpeed = kFadeSpeed;
+}
