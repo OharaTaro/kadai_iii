@@ -24,7 +24,7 @@ void SceneResult::init()
 
 void SceneResult::end()
 {
-	SetDrawBright(255, 255, 255);
+	
 }
 
 SceneBase* SceneResult::update()
