@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "Vec2.h"
-//#include <vector>
+#include <vector>
 #include <list>
 #include "Player.h"
 
@@ -10,9 +10,6 @@ class SceneMain : public SceneBase
 public:
 	SceneMain()
 	{
-		m_hPlayer = -1;
-		m_hEnemy = -1;
-		m_hBg = -1;
 		m_bgScroll = 0.0f;
 		m_endCount = 0;
 	}
@@ -49,9 +46,10 @@ private:
 
 private:
 	// グラフィックハンドル
-	int m_hPlayer;
-	int m_hEnemy;
-	int m_hBg;
+	std::vector<int>	m_graphicHandle;
+//	int m_hPlayer;
+//	int m_hEnemy;
+//	int m_hBg;
 
 	// ゲーム中に登場する物体
 	std::list<ObjectBase*>	m_object;

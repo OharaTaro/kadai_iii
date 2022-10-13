@@ -25,7 +25,13 @@ public:
 	virtual ColType getColType() const override { return m_myType; }
 	virtual ColType getTargetColType() const override { return m_targetType; }
 
+	// グラフィックデータ設定
+	void setGraph(int handle) { m_hGraph = handle; }
+
 private:
+	// グラフィックハンドル
+	int		m_hGraph;
+	// 移動量
 	Vec2	m_vec;
 
 	// 敵に当たる弾かプレイヤーに当たる弾かを設定する

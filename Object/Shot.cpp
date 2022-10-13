@@ -8,7 +8,7 @@
 namespace
 {
 	// サイズ
-	constexpr int kSize = 8;
+	constexpr int kSize = 16;
 	// 移動速度
 	constexpr float kSpeed = -4.0f;
 }
@@ -20,6 +20,7 @@ namespace
 
 Shot::Shot()
 {
+	m_hGraph = 0;
 	m_myType = ColType::kPlayerShot;
 	m_targetType = ColType::kEnemy;
 }
@@ -57,7 +58,12 @@ void Shot::update()
 void Shot::draw()
 {
 	if (!m_isExist)	return;
-	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, GetColor(0, 0, 255), true);
+	DrawRectGraph(m_pos.x, m_pos.y,
+		0, 0, kSize, kSize,
+		m_hGraph, true, false);
+
+	// 当たり判定の表示
+//	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, GetColor(0, 0, 255), false);
 }
 
 void Shot::startPlayer(Vec2 centerPos)

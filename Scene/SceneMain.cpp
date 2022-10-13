@@ -11,6 +11,32 @@
 
 namespace
 {
+	// グラフィックファイル名
+	const char* const kPlayerFileName		= "Data/player.png";
+	const char* const kEnemyFileName		= "Data/enemy00.png";
+	const char* const kPlayerShotFileName	= "Data/playerShot.png";
+	const char* const kEnemyShotFileName	= "Data/enemyShot.png";
+	const char* const kBgFileName			= "Data/bg.png";
+	// ファイル名リスト
+	typedef enum GraphicFileData
+	{
+		kGraphicFileData_Player,
+		kGraphicFileData_Enemy,
+		kGraphicFileData_PlayerShot,
+		kGraphicFileData_EnemyShot,
+		kGraphicFileData_Bg,
+
+		kGraphicFileData_Num
+	}GraphicFileData;
+	const char* const kGraphicFileNameList[kGraphicFileData_Num] =
+	{
+		kPlayerFileName,
+		kEnemyFileName,
+		kPlayerShotFileName,
+		kEnemyShotFileName,
+		kBgFileName,
+	};
+
 	// 背景色
 	const int kBgColor = GetColor(160, 216, 239);
 
@@ -25,15 +51,17 @@ namespace
 
 void SceneMain::init()
 {
-	m_hPlayer = LoadGraph("Data/player.png");
-	m_hEnemy = LoadGraph("Data/enemy00.png");
-	m_hBg = LoadGraph("Data/bg.png");
+	for (auto& fileName : kGraphicFileNameList)
+	{
+		int handle = LoadGraph(fileName);
+		m_graphicHandle.push_back(handle);
+	}
 
 	{
 		Player* pPlayer = new Player;
 		pPlayer->init();
 		pPlayer->setMain(this);
-		pPlayer->setGraph(m_hPlayer);
+		pPlayer->setGraph(m_graphicHandle[kGraphicFileData_Player]);
 		m_object.push_back(pPlayer);
 	}
 	for (int i = 0; i < kEnemyNum; i++)
@@ -42,7 +70,7 @@ void SceneMain::init()
 
 		pEnemy->init();
 		pEnemy->setMain(this);
-		pEnemy->setGraph(m_hEnemy);
+		pEnemy->setGraph(m_graphicHandle[kGraphicFileData_Enemy]);
 		Vec2 pos;
 		pos.x = static_cast<float>( (i % 8) * 64 + 90 );
 		pos.y = static_cast<float>( (i / 8) * 64 + 60 );
@@ -57,9 +85,12 @@ void SceneMain::init()
 void SceneMain::end()
 {
 	endObject(m_object);
-	DeleteGraph(m_hPlayer);
-	DeleteGraph(m_hEnemy);
-	DeleteGraph(m_hBg);
+	for (auto& handle : m_graphicHandle)
+	{
+		DeleteGraph(handle);
+		handle = -1;
+	}
+	m_graphicHandle.clear();
 }
 
 SceneBase* SceneMain::update()
@@ -114,8 +145,8 @@ void SceneMain::draw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, kBgColor, true);
 
 	// 背景
-	DrawGraphF(0, m_bgScroll, m_hBg, true);
-	DrawGraphF(0, m_bgScroll - Game::kScreenHeight , m_hBg, true);
+	DrawGraphF(0, m_bgScroll, m_graphicHandle[kGraphicFileData_Bg], true);
+	DrawGraphF(0, m_bgScroll - Game::kScreenHeight , m_graphicHandle[kGraphicFileData_Bg], true);
 
 	drawObject(m_object);
 
@@ -130,6 +161,7 @@ void SceneMain::addPlayerShot(Vec2 pos)
 	Shot* pShot = new Shot;
 	pShot->init();
 	pShot->setMain(this);
+	pShot->setGraph(m_graphicHandle[kGraphicFileData_PlayerShot]);
 	pShot->startPlayer(pos);
 	m_object.push_back(pShot);
 }
@@ -139,6 +171,7 @@ void SceneMain::addEnemyShot(Vec2 pos)
 	Shot* pShot = new Shot;
 	pShot->init();
 	pShot->setMain(this);
+	pShot->setGraph(m_graphicHandle[kGraphicFileData_EnemyShot]);
 	pShot->startEnemy(pos);
 	m_object.push_back(pShot);
 }
