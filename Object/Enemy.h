@@ -19,6 +19,9 @@ public:
 	// グラフィックデータ設定
 	void setGraph(int handle) { m_hGraph = handle; }
 
+	// 待機終了(ゲーム開始)
+	void setWait(bool isWait) { m_isWaiting = isWait; }
+
 	// プレイヤーのたまにぶつかられた時の処理
 	virtual void beHit();
 
@@ -34,6 +37,9 @@ private:
 	int		m_hGraph;
 	// アニメーション
 	int		m_animFrameCount;
+
+	// 演出用	待機(アニメーションはするが移動やショットは撃たない)
+	bool	m_isWaiting;
 
 	// 移動情報	インベーダーっぽく動かす
 	int		m_moveFrameCount;

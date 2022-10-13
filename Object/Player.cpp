@@ -25,6 +25,7 @@ Player::Player()
 {
 	m_hGraph = -1;
 	m_animFrameCount = 0;
+	m_isWaiting = false;
 	m_shotInterval = 0;
 }
 Player::~Player()
@@ -41,6 +42,8 @@ void Player::init()
 
 	m_colSize.x = kSize;
 	m_colSize.y = kSize;
+
+	m_isWaiting = true;
 }
 
 void Player::end()
@@ -59,15 +62,6 @@ void Player::update()
 		m_animFrameCount = 0;
 	}
 
-	// ショット生成
-	m_shotInterval++;
-	if( (Pad::isPress(PAD_INPUT_1)) &&
-		(m_shotInterval >= kShotInterval) )
-	{
-		m_pMain->addPlayerShot(getShotStartPos());
-		m_shotInterval = 0;
-	}
-
 	// 移動
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
@@ -84,6 +78,17 @@ void Player::update()
 	if (m_pos.x > Game::kScreenWidth)
 	{
 		m_pos.x = Game::kScreenWidth;
+	}
+
+	// 待機中はショット撃てない
+	if (m_isWaiting)	return;
+	// ショット生成
+	m_shotInterval++;
+	if( (Pad::isPress(PAD_INPUT_1)) &&
+		(m_shotInterval >= kShotInterval) )
+	{
+		m_pMain->addPlayerShot(getShotStartPos());
+		m_shotInterval = 0;
 	}
 }
 

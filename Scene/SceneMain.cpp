@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include <cassert>
 #include "game.h"
 #include "SceneMain.h"
 #include "SceneTitle.h"
@@ -8,33 +9,32 @@
 #include "Enemy.h"
 #include "Shot.h"
 #include "Particle.h"
+#include "Effect.h"
 
 namespace
 {
-	// グラフィックファイル名
-	const char* const kPlayerFileName		= "Data/player.png";
-	const char* const kEnemyFileName		= "Data/enemy00.png";
-	const char* const kPlayerShotFileName	= "Data/playerShot.png";
-	const char* const kEnemyShotFileName	= "Data/enemyShot.png";
-	const char* const kBgFileName			= "Data/bg.png";
-	// ファイル名リスト
+	// 使用するグラフィックファイルリスト
 	typedef enum GraphicFileData
 	{
-		kGraphicFileData_Player,
-		kGraphicFileData_Enemy,
-		kGraphicFileData_PlayerShot,
-		kGraphicFileData_EnemyShot,
-		kGraphicFileData_Bg,
+		kGraphicFileData_Player,		// プレイヤー
+		kGraphicFileData_Enemy,			// 敵
+		kGraphicFileData_PlayerShot,	// プレイヤーの撃つ弾
+		kGraphicFileData_EnemyShot,		// 敵の撃つ弾
+
+		kGraphicFileData_AppearEffect,	// 登場演出
+		kGraphicFileData_Bg,			// スクロールする背景の雲
 
 		kGraphicFileData_Num
 	}GraphicFileData;
+	// グラフィックファイル名
 	const char* const kGraphicFileNameList[kGraphicFileData_Num] =
 	{
-		kPlayerFileName,
-		kEnemyFileName,
-		kPlayerShotFileName,
-		kEnemyShotFileName,
-		kBgFileName,
+		"Data/player.png",
+		"Data/enemy00.png",
+		"Data/playerShot.png",
+		"Data/enemyShot.png",
+		"Data/appearEffect.png",
+		"Data/bg.png",
 	};
 
 	// 背景色
@@ -66,21 +66,17 @@ void SceneMain::init()
 		pPlayer->setGraph(m_graphicHandle[kGraphicFileData_Player]);
 		m_object.push_back(pPlayer);
 	}
+#if false	// 敵はゲーム中の登場演出で配置する
 	for (int i = 0; i < kEnemyNum; i++)
 	{
-		Enemy* pEnemy = new Enemy;
-
-		pEnemy->init();
-		pEnemy->setMain(this);
-		pEnemy->setGraph(m_graphicHandle[kGraphicFileData_Enemy]);
-		Vec2 pos;
-		pos.x = static_cast<float>( (i % kEnemyHNum) * 64 + 128 );
-		pos.y = static_cast<float>( (i / kEnemyHNum) * 48 + 60 );
-		pEnemy->setStart(pos);
-		m_object.push_back(pEnemy);
+		addStartEnemy(i);
 	}
+#endif
 
 	m_bgScroll = 0.0f;
+
+	m_seq = Seq::Seq_Wait;
+	m_seqFrame = 0;
 	m_endCount = 0;
 }
 
@@ -97,48 +93,15 @@ void SceneMain::end()
 
 SceneBase* SceneMain::update()
 {
-	SceneBase::updateFade();
-	if (isFading())	return this;	// フェードイン、アウト中は動かない
-	// 背景のスクロール
-	m_bgScroll += 1.0f;
-	if (m_bgScroll > Game::kScreenHeight)
+	switch (m_seq)
 	{
-		m_bgScroll -= Game::kScreenHeight;
+	case Seq::Seq_Wait:
+		return updateWait();
+	case Seq::Seq_Game:
+		return updateGame();
 	}
-
-	// 各オブジェクトの処理
-	updateObject(m_object);
-
-	// 当たり判定
-	for (auto& hitObj : m_object)
-	{
-		for (auto& beHitObj : m_object)
-		{
-			if (hitObj->isCol(*beHitObj))
-			{
-				hitObj->hit();
-				beHitObj->beHit();
-			}
-		}
-	}
-
-	// 敵が全滅orプレイヤーが死んだらタイトルに戻る
-	if (!isExistPlayer() || (getEnemyNum() == 0))
-	{
-		m_endCount++;
-		if( (!isFading()) && (m_endCount >= kGameEndFadeOutStartFrame) )
-		{
-			startFadeOut();
-		}
-		if (m_endCount >= kGameEndWaitFrame)
-		{
-			// 結果表示画面へ	ゲーム結果もここで渡しておく
-			SceneResult* pResult = new SceneResult;
-			pResult->setResult(isExistPlayer(), kEnemyNum - getEnemyNum());
-			return pResult;
-		}
-	}
-	return this;
+	assert(false);
+	return nullptr;
 }
 
 void SceneMain::draw()
@@ -156,6 +119,26 @@ void SceneMain::draw()
 	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
 
 	SceneBase::drawFade();
+}
+
+void SceneMain::addStartEnemy(int no)
+{
+	Enemy* pEnemy = new Enemy;
+
+	pEnemy->init();
+	pEnemy->setMain(this);
+	pEnemy->setGraph(m_graphicHandle[kGraphicFileData_Enemy]);
+	Vec2 pos;
+	pos.x = static_cast<float>((no % kEnemyHNum) * 64 + 128);
+	pos.y = static_cast<float>((no / kEnemyHNum) * 48 + 60);
+	pEnemy->setStart(pos);
+	m_object.push_back(pEnemy);
+	// 登場演出
+	{
+		pos.x -= 32.0f;
+		pos.y -= 88.0f;
+		createEffect(pos, 60);
+	}
 }
 
 void SceneMain::addPlayerShot(Vec2 pos)
@@ -230,6 +213,116 @@ void SceneMain::createParticle(Vec2 pos, int color, int num)
 		pPart->setMain(this);
 		pPart->start(pos, color);
 		m_object.push_back(pPart);
+	}
+}
+
+void SceneMain::createEffect(Vec2 pos, int existFrame)
+{
+	Effect* pEff = new Effect;
+	pEff->init();
+	pEff->setMain(this);
+	pEff->setGraph(m_graphicHandle[kGraphicFileData_AppearEffect]);
+	pEff->start(pos, 60);
+	m_object.push_back(pEff);
+}
+
+SceneBase* SceneMain::updateWait()
+{
+	SceneBase::updateFade();
+	if (isFading())	return this;	// フェードイン、アウト中は動かない
+	// 背景のスクロール
+	m_bgScroll += 1.0f;
+	if (m_bgScroll > Game::kScreenHeight)
+	{
+		m_bgScroll -= Game::kScreenHeight;
+	}
+
+	// 各オブジェクトの処理
+	updateObject(m_object);
+
+	// 敵の登場処理
+	m_seqFrame++;
+
+	// 敵登場開始まで待つ
+	if (m_seqFrame > 60)
+	{
+		if (!(m_seqFrame % 8))
+		{
+			if (getEnemyNum() < kEnemyNum)
+			{
+				addStartEnemy(getEnemyNum());
+			}
+		}
+	}
+
+	if ((m_seqFrame >= 300) &&
+		(getEnemyNum() >= kEnemyNum))
+	{
+		endWait();
+		m_seq = Seq::Seq_Game;
+		m_seqFrame = 0;
+	}
+	return this;
+}
+
+SceneBase* SceneMain::updateGame()
+{
+	SceneBase::updateFade();
+	if (isFading())	return this;	// フェードイン、アウト中は動かない
+	// 背景のスクロール
+	m_bgScroll += 1.0f;
+	if (m_bgScroll > Game::kScreenHeight)
+	{
+		m_bgScroll -= Game::kScreenHeight;
+	}
+
+	// 各オブジェクトの処理
+	updateObject(m_object);
+
+	// 当たり判定
+	for (auto& hitObj : m_object)
+	{
+		for (auto& beHitObj : m_object)
+		{
+			if (hitObj->isCol(*beHitObj))
+			{
+				hitObj->hit();
+				beHitObj->beHit();
+			}
+		}
+	}
+
+	// 敵が全滅orプレイヤーが死んだらタイトルに戻る
+	if (!isExistPlayer() || (getEnemyNum() == 0))
+	{
+		m_endCount++;
+		if ((!isFading()) && (m_endCount >= kGameEndFadeOutStartFrame))
+		{
+			startFadeOut();
+		}
+		if (m_endCount >= kGameEndWaitFrame)
+		{
+			// 結果表示画面へ	ゲーム結果もここで渡しておく
+			SceneResult* pResult = new SceneResult;
+			pResult->setResult(isExistPlayer(), kEnemyNum - getEnemyNum());
+			return pResult;
+		}
+	}
+	return this;
+}
+
+void SceneMain::endWait()
+{
+	for (const auto& pObj : m_object)
+	{
+		if (pObj->getColType() == ObjectBase::ColType::kEnemy)
+		{
+			dynamic_cast<Enemy*>(pObj)->setWait(false);
+		}
+		else if (pObj->getColType() == ObjectBase::ColType::kPlayer)
+		{
+			dynamic_cast<Player*>(pObj)->setWait(false);
+		}
 	}
 }
 

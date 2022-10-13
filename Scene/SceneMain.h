@@ -22,6 +22,9 @@ public:
 	virtual SceneBase* update() override;
 	virtual void draw() override;
 
+	// 初期配置用の敵の生成
+	void addStartEnemy(int no);
+
 	// プレイヤーのショット生成
 	void addPlayerShot( Vec2 pos );
 	// 敵のショット生成
@@ -38,7 +41,24 @@ public:
 	// パーティクル生成
 	void createParticle(Vec2 pos, int color, int num);
 
+	// エフェクト生成
+	void createEffect(Vec2 pos, int existFrame);
+
 private:
+	enum class Seq
+	{
+		Seq_Wait,	// ゲーム開始待ち
+		Seq_Game,	// ゲーム本体
+	};
+
+private:
+	// 各シーケンスごとのupdate処理
+	SceneBase* updateWait();
+	SceneBase* updateGame();
+
+	// Waitシーケンスの終了処理
+	void endWait();
+
 	// list<ObjectBase*>への各処理
 	void updateObject(std::list<ObjectBase*>& obj);
 	void drawObject(std::list<ObjectBase*>& obj);
@@ -47,14 +67,16 @@ private:
 private:
 	// グラフィックハンドル
 	std::vector<int>	m_graphicHandle;
-//	int m_hPlayer;
-//	int m_hEnemy;
-//	int m_hBg;
 
 	// ゲーム中に登場する物体
 	std::list<ObjectBase*>	m_object;
 	// 背景のスクロール
 	float m_bgScroll;
+
+	// 現在のゲームシーケンス
+	Seq	m_seq;
+	// フレームカウント
+	int m_seqFrame;
 	// ゲーム終了後のフレーム待ち
 	int m_endCount;
 };

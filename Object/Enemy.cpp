@@ -23,6 +23,7 @@ Enemy::Enemy()
 {
 	m_hGraph = -1;
 	m_animFrameCount = 0;
+	m_isWaiting = false;
 	m_moveFrameCount = 0;
 	m_moveOffsetCount = 0;
 	m_moveDir = 0;
@@ -35,6 +36,8 @@ Enemy::~Enemy()
 
 void Enemy::init()
 {
+	m_isWaiting = true;
+
 	m_moveFrameCount = 0;
 	m_moveOffsetCount = 0;
 	m_moveDir = 1;
@@ -54,6 +57,9 @@ void Enemy::update()
 	{
 		m_animFrameCount = 0;
 	}
+
+	// 待機中は移動、ショットを行わない
+	if (m_isWaiting)	return;
 
 	// 移動
 	m_moveFrameCount++;
@@ -118,6 +124,7 @@ void Enemy::setStart(Vec2 pos)
 
 	m_pos -= m_colSize / 2;
 
+	m_isWaiting = true;
 	m_shotInterval = 120;
 }
 

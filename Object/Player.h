@@ -19,7 +19,8 @@ public:
 
 	// グラフィックデータ設定
 	void setGraph(int handle) { m_hGraph = handle; }
-
+	// 待機終了(ゲーム開始)
+	void setWait(bool isWait) { m_isWaiting = isWait; }
 	// 敵の弾が当たったときの処理
 	virtual void beHit() override;
 	// 弾発射位置の取得
@@ -30,6 +31,9 @@ private:
 	int		m_hGraph;
 	// アニメーション
 	int		m_animFrameCount;
+
+	// 演出用	待機(ショット撃てない)
+	bool	m_isWaiting;
 
 	// ショットの発射間隔
 	int		m_shotInterval;
