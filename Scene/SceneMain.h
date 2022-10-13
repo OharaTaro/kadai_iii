@@ -11,6 +11,8 @@ public:
 	SceneMain()
 	{
 		m_bgScroll = 0.0f;
+		m_seq = Seq::Seq_Wait;
+		m_seqFrame = 0;
 		m_endCount = 0;
 	}
 	virtual ~SceneMain() {}
