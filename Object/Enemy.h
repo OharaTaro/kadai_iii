@@ -35,5 +35,11 @@ private:
 	// アニメーション
 	int		m_animFrameCount;
 
+	// 移動情報	インベーダーっぽく動かす
+	int		m_moveFrameCount;
+	int		m_moveOffsetCount;	// 0 -> 8-> -8 -> 8	みたいに左右に動かす
+	int		m_moveDir;
+
+	// ショットの発射間隔
 	int m_shotInterval;
 };

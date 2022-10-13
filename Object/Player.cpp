@@ -36,7 +36,7 @@ void Player::init()
 {
 	m_isExist = true;
 
-	m_pos.x = Game::kScreenWidth / 2;
+	m_pos.x = Game::kScreenWidth / 2 - kSize / 2;
 	m_pos.y = Game::kScreenHeight - 80.0f;
 
 	m_colSize.x = kSize;

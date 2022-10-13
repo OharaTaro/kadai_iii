@@ -10,6 +10,9 @@ namespace
 	constexpr int kSize = 32;
 	const int kColor = GetColor(255,0,0);
 
+	// 移動情報
+	constexpr int kMoveInterval = 30;	// 移動を行う間隔(フレーム)
+
 	// アニメーション情報
 	constexpr int kAnimNum = 4;		// アニメのコマ数
 	constexpr int kAnimNo[kAnimNum] = { 0, 1, 2,1 };
@@ -20,6 +23,9 @@ Enemy::Enemy()
 {
 	m_hGraph = -1;
 	m_animFrameCount = 0;
+	m_moveFrameCount = 0;
+	m_moveOffsetCount = 0;
+	m_moveDir = 0;
 	m_shotInterval = 0;
 }
 Enemy::~Enemy()
@@ -29,7 +35,9 @@ Enemy::~Enemy()
 
 void Enemy::init()
 {
-	
+	m_moveFrameCount = 0;
+	m_moveOffsetCount = 0;
+	m_moveDir = 1;
 }
 
 void Enemy::end()
@@ -46,6 +54,34 @@ void Enemy::update()
 	{
 		m_animFrameCount = 0;
 	}
+
+	// 移動
+	m_moveFrameCount++;
+	if (m_moveFrameCount >= kMoveInterval)
+	{
+		m_moveOffsetCount += m_moveDir;
+		if (m_moveDir > 0)	// 右方向への移動
+		{
+			m_pos.x += 8.0f;
+			if (m_moveOffsetCount >= 8)
+			{
+				m_pos.y += 8.0f;
+				m_moveDir = -1;
+			}
+		}
+		if (m_moveDir < 0)	// 左方向への移動
+		{
+			m_pos.x -= 8.0f;
+			if (m_moveOffsetCount <= -8)
+			{
+				m_pos.y += 8.0f;
+				m_moveDir = 1;
+			}
+		}
+
+		m_moveFrameCount = 0;
+	}
+
 	// 一定間隔でショットを撃つ
 	m_shotInterval--;
 	if (m_shotInterval <= 0)
