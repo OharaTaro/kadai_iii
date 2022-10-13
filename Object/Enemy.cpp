@@ -15,7 +15,7 @@ namespace
 
 	// アニメーション情報
 	constexpr int kAnimNum = 4;		// アニメのコマ数
-	constexpr int kAnimNo[kAnimNum] = { 0, 1, 2,1 };
+	constexpr int kAnimNo[kAnimNum] = { 0, 1, 2, 1 };
 	constexpr int kAnimFrame = 8;	// １コマ当たりのフレーム数
 }
 
@@ -115,6 +115,8 @@ void Enemy::setStart(Vec2 pos)
 
 	m_colSize.x = kSize;
 	m_colSize.y = kSize;
+
+	m_pos -= m_colSize / 2;
 
 	m_shotInterval = 120;
 }

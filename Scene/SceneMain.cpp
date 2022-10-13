@@ -44,7 +44,9 @@ namespace
 	constexpr int kGameEndWaitFrame = 150;
 	constexpr int kGameEndFadeOutStartFrame = 120;
 	// “G‚Ì”
-	constexpr int kEnemyNum = 24;
+	constexpr int kEnemyHNum = 7;	// ‰¡•ûŒü‚Ì“G‚Ì”
+	constexpr int kEnemyVNum = 3;	// c•ûŒü‚Ì“G‚Ì”
+	constexpr int kEnemyNum = kEnemyHNum * kEnemyVNum;
 }
 
 // ===============================================
@@ -72,8 +74,8 @@ void SceneMain::init()
 		pEnemy->setMain(this);
 		pEnemy->setGraph(m_graphicHandle[kGraphicFileData_Enemy]);
 		Vec2 pos;
-		pos.x = static_cast<float>( (i % 8) * 64 + 90 );
-		pos.y = static_cast<float>( (i / 8) * 64 + 60 );
+		pos.x = static_cast<float>( (i % kEnemyHNum) * 64 + 128 );
+		pos.y = static_cast<float>( (i / kEnemyHNum) * 48 + 60 );
 		pEnemy->setStart(pos);
 		m_object.push_back(pEnemy);
 	}
