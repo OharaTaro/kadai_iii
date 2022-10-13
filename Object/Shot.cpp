@@ -65,12 +65,12 @@ void Shot::draw()
 	Vec2 drawPos = colCenter;
 	drawPos.x -= kGraphSize / 2;
 	drawPos.y -= kGraphSize / 2;
-	DrawRectGraph(drawPos.x, drawPos.y,
+	DrawRectGraphF(drawPos.x, drawPos.y,
 		0, 0, kGraphSize, kGraphSize,
 		m_hGraph, true, false);
 
 	// “–‚½‚è”»’è‚Ì•\Ž¦
-	DrawBoxAA(getLeft(), getTop(), getRight(), getBottom(), GetColor(0, 0, 255), false);
+//	DrawBoxAA(getLeft(), getTop(), getRight(), getBottom(), GetColor(0, 0, 255), false);
 }
 
 void Shot::startPlayer(Vec2 centerPos)
