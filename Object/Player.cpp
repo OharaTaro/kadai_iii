@@ -92,7 +92,7 @@ void Player::draw()
 	if (!m_isExist)	return;
 	
 	int animNo = m_animFrameCount / kAnimFrame;
-	DrawRectGraph(m_pos.x, m_pos.y,
+	DrawRectGraphF(m_pos.x, m_pos.y,
 				animNo * kSize, 96, kSize, kSize,
 				m_hGraph, true, false);
 	// “–‚½‚è”»’è•\Ž¦

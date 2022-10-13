@@ -64,7 +64,7 @@ void Enemy::draw()
 
 	int animIndex = m_animFrameCount / kAnimFrame;
 	int animNo = kAnimNo[animIndex];
-	DrawRectGraph(m_pos.x, m_pos.y,
+	DrawRectGraphF(m_pos.x, m_pos.y,
 		animNo * kSize, 0, kSize, kSize,
 		m_hGraph, true, false);
 

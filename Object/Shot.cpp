@@ -8,7 +8,8 @@
 namespace
 {
 	// サイズ
-	constexpr int kSize = 16;
+	constexpr int kColSize = 8;		// 当たり判定のサイズ
+	constexpr int kGraphSize = 16;	// グラフィックのサイズ
 	// 移動速度
 	constexpr float kSpeed = -4.0f;
 }
@@ -44,7 +45,7 @@ void Shot::update()
 	if (!m_isExist)	return;
 	m_pos += m_vec;
 	if ((m_vec.y < 0) &&
-		(m_pos.y < 0.0f - kSize) )
+		(m_pos.y < 0.0f - kGraphSize) )
 	{
 		m_isExist = false;
 	}
@@ -58,12 +59,18 @@ void Shot::update()
 void Shot::draw()
 {
 	if (!m_isExist)	return;
-	DrawRectGraph(m_pos.x, m_pos.y,
-		0, 0, kSize, kSize,
+	// 当たり判定と違うサイズのグラフィック表示
+	Vec2 colCenter = m_pos;
+	colCenter += m_colSize / 2;
+	Vec2 drawPos = colCenter;
+	drawPos.x -= kGraphSize / 2;
+	drawPos.y -= kGraphSize / 2;
+	DrawRectGraph(drawPos.x, drawPos.y,
+		0, 0, kGraphSize, kGraphSize,
 		m_hGraph, true, false);
 
 	// 当たり判定の表示
-//	DrawBoxAA(m_pos.x, m_pos.y, m_pos.x + m_colSize.x, m_pos.y + m_colSize.y, GetColor(0, 0, 255), false);
+	DrawBoxAA(getLeft(), getTop(), getRight(), getBottom(), GetColor(0, 0, 255), false);
 }
 
 void Shot::startPlayer(Vec2 centerPos)
@@ -71,8 +78,8 @@ void Shot::startPlayer(Vec2 centerPos)
 	m_isExist = true;
 	m_pos = centerPos;
 
-	m_colSize.x = kSize;
-	m_colSize.y = kSize;
+	m_colSize.x = kColSize;
+	m_colSize.y = kColSize;
 
 	m_pos -= m_colSize / 2;
 
@@ -88,8 +95,8 @@ void Shot::startEnemy(Vec2 centerPos)
 	m_isExist = true;
 	m_pos = centerPos;
 
-	m_colSize.x = kSize;
-	m_colSize.y = kSize;
+	m_colSize.x = kColSize;
+	m_colSize.y = kColSize;
 
 	m_pos -= m_colSize / 2;
 
