@@ -5,6 +5,7 @@
 #include "SceneTitle.h"
 #include "SceneResult.h"
 #include "Pad.h"
+#include "Sound.h"
 
 #include "Enemy.h"
 #include "Shot.h"
@@ -37,19 +38,6 @@ namespace
 		"Data/bg.png",
 	};
 
-	// 使用するサウンドファイルリスト
-	typedef enum SoundFileData
-	{
-		kSoundFileData_Appear,		// 敵の登場
-
-		kSoundFileData_Num
-	}SoundFileData;
-	// グラフィックファイル名
-	const char* const kSoundFileNameList[kSoundFileData_Num] =
-	{
-		"Sound/appear.mp3",
-	};
-
 	// 背景色
 	const int kBgColor = GetColor(160, 216, 239);
 
@@ -76,12 +64,6 @@ void SceneMain::init()
 		int handle = LoadGraph(fileName);
 		m_graphicHandle.push_back(handle);
 	}
-	// サウンドデータの読み込み
-	for (auto& fileName : kSoundFileNameList)
-	{
-		int handle = LoadSoundMem(fileName);
-		m_soundHandle.push_back(handle);
-	}
 	{
 		Player* pPlayer = new Player;
 		pPlayer->init();
@@ -107,13 +89,6 @@ void SceneMain::end()
 		handle = -1;
 	}
 	m_graphicHandle.clear();
-	// サウンドデータの解放
-	for (auto& handle : m_soundHandle)
-	{
-		DeleteGraph(handle);
-		handle = -1;
-	}
-	m_soundHandle.clear();
 }
 
 SceneBase* SceneMain::update()
@@ -172,7 +147,7 @@ void SceneMain::addStartEnemy(int no)
 		pos.y -= 88.0f;
 		createEffect(pos, 60);
 	}
-	PlaySoundMem(m_soundHandle[kSoundFileData_Appear], DX_PLAYTYPE_BACK, true);
+	Sound::play(Sound::SoundId_EnemyAppear);
 }
 
 void SceneMain::addPlayerShot(Vec2 pos)
