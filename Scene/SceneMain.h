@@ -79,6 +79,8 @@ private:
 private:
 	// グラフィックハンドル
 	std::vector<int>	m_graphicHandle;
+	// サウンドハンドル
+	std::vector<int>	m_soundHandle;
 
 	// ゲーム中に登場する物体
 	std::list<ObjectBase*>	m_object;
