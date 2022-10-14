@@ -65,8 +65,13 @@ private:
 
 	// 敵の番号から初期位置を取得する
 	Vec2 getEnemyStartPos(int index);
+	// プレイヤー、敵をの待機設定
+	void setWaitObject( bool isWait );
 	// プレイヤー、敵の待機状態を解除
 	void endWaitObject();
+
+	// ショットをすべて消す	ゲーム終了時に行う
+	void eraseShot();
 
 	// 各シーケンス共通処理
 	void updateBg();	// 背景のスクロール

@@ -41,6 +41,10 @@ public:
 	// ‚Ô‚Â‚©‚Á‚½‚Æ‚«‚Ì‚Ô‚Â‚©‚ç‚ê‚é‘¤‚Ìˆ—	’e¨“G‚Ìê‡‚Ì“G
 	virtual void beHit() {};
 
+	// î•ñæ“¾
+	Vec2 getPos() const { return m_pos; }
+	Vec2 getColSize() const { return m_colSize; }
+
 	// “–‚½‚è”»’è‚Ég—p‚·‚éî•ñ
 	virtual float getLeft() const { return m_pos.x; }
 	virtual float getRight() const { return m_pos.x + m_colSize.x; }

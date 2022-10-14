@@ -22,6 +22,10 @@ public:
 	void setResult(bool isWin, int destroyNum);
 
 private:
+	// ƒ^ƒCƒgƒ‹”wŒi
+	int m_hBgSuccess;
+	int m_hBgFail;
+
 	// ƒQ[ƒ€Œ‹‰Ê
 	bool m_isSuccess;
 	int m_destroyNum;

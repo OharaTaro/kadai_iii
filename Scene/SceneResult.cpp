@@ -15,17 +15,24 @@ namespace
 	// ï∂éöóÒì_ñ≈
 	constexpr int kTextDispFrame = 45;
 	constexpr int kTextHideFrame = 15;
+	// ï∂éöêF
+	const int kTextColorSuccess = GetColor(0, 0, 0);
+	const int kTextColorFail = GetColor(255,255,255);
 }
 
 void SceneResult::init()
 {
 	m_textBlinkFrame = 0;
 	SetFontSize(16);
+
+	m_hBgSuccess = LoadGraph("Data/successBg.jpg");
+	m_hBgFail = LoadGraph("Data/failBg.jpg");
 }
 
 void SceneResult::end()
 {
-	
+	DeleteGraph(m_hBgSuccess);
+	DeleteGraph(m_hBgFail);
 }
 
 SceneBase* SceneResult::update()
@@ -59,23 +66,33 @@ SceneBase* SceneResult::update()
 
 void SceneResult::draw()
 {
+	int textColor = 0;
+
 	if (m_isSuccess)
 	{
+		textColor = kTextColorSuccess;
+
+		DrawGraph(0, 0, m_hBgSuccess, false);
+
 		int width = GetDrawStringWidth(kSuccessText, static_cast<int>(strlen(kSuccessText)));
-		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kSuccessText, GetColor(255, 255, 255));
+		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kSuccessText, textColor);
 	}
 	else
 	{
-		int width = GetDrawStringWidth(kFailText, static_cast<int>(strlen(kFailText)));
-		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kFailText, GetColor(255, 255, 255));
+		textColor = kTextColorFail;
 
-		DrawFormatString(Game::kScreenWidth / 2 - width / 2, 196, GetColor(255, 255, 255), kScoreText, m_destroyNum);
+		DrawGraph(0, 0, m_hBgFail, false);
+
+		int width = GetDrawStringWidth(kFailText, static_cast<int>(strlen(kFailText)));
+		DrawString(Game::kScreenWidth / 2 - width / 2, 180, kFailText, textColor);
+
+		DrawFormatString(Game::kScreenWidth / 2 - width / 2, 196, textColor, kScoreText, m_destroyNum);
 	}
 
 	if (m_textBlinkFrame < kTextDispFrame)
 	{
 		int width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
-		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
+		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, textColor);
 	}
 
 	SceneBase::drawFade();

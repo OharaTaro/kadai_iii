@@ -144,7 +144,7 @@ void SceneMain::addStartEnemy(int no)
 	// 登場演出
 	{
 		pos.x -= 32.0f;
-		pos.y -= 88.0f;
+		pos.y -= 82.0f;
 		createEffect(pos, 60);
 	}
 	Sound::play(Sound::SoundId_EnemyAppear);
@@ -285,7 +285,7 @@ SceneBase* SceneMain::updateCount()
 	m_seqFrame++;
 	if (m_seqFrame >= kCountDownWaitFrame)
 	{
-		endWaitObject();
+		setWaitObject(false);	// 待機状態解除
 		m_seq = Seq::Seq_Game;
 		m_seqFrame = 0;
 		m_endCount = 0;
@@ -321,6 +321,12 @@ SceneBase* SceneMain::updateGame()
 	// 敵が全滅orプレイヤーが死んだらタイトルに戻る
 	if (!isExistPlayer() || (getEnemyNum() == 0))
 	{
+		if (m_endCount == 0)
+		{
+			setWaitObject(true);	// 待機状態に
+			eraseShot();	// ショットすべて消す
+		}
+
 		int volume = 255;
 		volume -= m_endCount * 4;
 		if (volume < 0)	volume = 0;
@@ -351,8 +357,8 @@ void SceneMain::drawCountDown() const
 	int dispNo = (kCountDownWaitFrame - m_seqFrame) / 60 + 1;
 	if (dispNo <= 0)	dispNo = 1;
 	if (dispNo > 3)		dispNo = 3;
-	int width = GetDrawFormatStringWidth("&d", dispNo);
-	int dispX = Game::kScreenWidth / 2 - width / 4;
+	int width = GetDrawFormatStringWidth("%d", dispNo);
+	int dispX = Game::kScreenWidth / 2 - width / 2;
 	int dispY = Game::kScreenHeight / 2 - fonstSize / 2;
 	dispX += GetRand(8) - 4;
 	dispY += GetRand(8) - 4;
@@ -368,17 +374,40 @@ Vec2 SceneMain::getEnemyStartPos(int index)
 	return pos;
 }
 
-void SceneMain::endWaitObject()
+void SceneMain::setWaitObject(bool isWait)
 {
 	for (const auto& pObj : m_object)
 	{
 		if (pObj->getColType() == ObjectBase::ColType::kEnemy)
 		{
-			dynamic_cast<Enemy*>(pObj)->setWait(false);
+			dynamic_cast<Enemy*>(pObj)->setWait(isWait);
 		}
 		else if (pObj->getColType() == ObjectBase::ColType::kPlayer)
 		{
-			dynamic_cast<Player*>(pObj)->setWait(false);
+			dynamic_cast<Player*>(pObj)->setWait(isWait);
+		}
+	}
+}
+
+void SceneMain::eraseShot()
+{
+	std::list<ObjectBase*>::iterator it = m_object.begin();
+	while (it != m_object.end())
+	{
+		auto pObj = (*it);
+		pObj->update();
+		if( (pObj->getColType() == ObjectBase::ColType::kPlayerShot) ||
+			(pObj->getColType() == ObjectBase::ColType::kEnemyShot) )
+		{
+			Vec2 pos = pObj->getPos() + pObj->getColSize() / 2;
+			createParticle(pos, GetColor(255,0,0), 32);
+
+			delete pObj;
+			it = m_object.erase(it);
+		}
+		else
+		{
+			it++;
 		}
 	}
 }

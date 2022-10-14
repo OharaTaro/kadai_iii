@@ -13,17 +13,23 @@ namespace
 	// ï∂éöóÒì_ñ≈
 	constexpr int kTextDispFrame = 45;
 	constexpr int kTextHideFrame = 15;
+
+	// ï∂éöêF
+	const int kFontColor = GetColor(0, 0, 0);
 }
 
 void SceneTitle::init()
 {
 	m_textBlinkFrame = 0;
-	SetFontSize(16);
+	SetFontSize(32);
+
+	m_hBg = LoadGraph("Data/titleBg.jpg");
 }
 
 void SceneTitle::end()
 {
-	
+	DeleteGraph(m_hBg);
+	SetFontSize(16);
 }
 
 SceneBase* SceneTitle::update()
@@ -57,13 +63,15 @@ SceneBase* SceneTitle::update()
 
 void SceneTitle::draw()
 {
+	DrawGraph(0,0,m_hBg, false);
+
 	int width = GetDrawStringWidth(kTitleText, static_cast<int>(strlen(kTitleText)));
-	DrawString(Game::kScreenWidth/2 - width/2, 180, kTitleText,GetColor(255,255,255));
+	DrawString(Game::kScreenWidth/2 - width/2, 160, kTitleText,kFontColor);
 
 	if (m_textBlinkFrame < kTextDispFrame)
 	{
 		width = GetDrawStringWidth(kGuideText, static_cast<int>(strlen(kGuideText)));
-		DrawString(Game::kScreenWidth / 2 - width / 2, 300, kGuideText, GetColor(255, 255, 255));
+		DrawString(Game::kScreenWidth / 2 - width / 2, 280, kGuideText, kFontColor);
 	}
 
 	SceneBase::drawFade();
