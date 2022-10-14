@@ -10,6 +10,7 @@ namespace
 	// サウンドファイル名
 	const char* const kFileName[Sound::SoundId_Num] =
 	{
+		"Sound/explosion.mp3",
 		"Sound/appear.mp3",
 	};
 }

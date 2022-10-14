@@ -2,6 +2,7 @@
 #include "game.h"
 #include "DxLib.h"
 #include "Pad.h"
+#include "Sound.h"
 #include "SceneMain.h"
 
 namespace
@@ -111,6 +112,8 @@ void Player::beHit()
 	pos.x += m_colSize.x / 2;
 	pos.y += m_colSize.y / 2;
 	m_pMain->createParticle(pos, kColor, 32);
+
+	Sound::play(Sound::SoundId_PlayerExplosion);
 }
 
 Vec2 Player::getShotStartPos() const

@@ -5,6 +5,7 @@ namespace Sound
 {
 	typedef enum SoundId
 	{
+		SoundId_PlayerExplosion,	// ƒvƒŒƒCƒ„[”š”­‰¹
 		SoundId_EnemyAppear,	// “G‚Ì“oê‰¹
 
 		SoundId_Num
