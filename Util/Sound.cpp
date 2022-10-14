@@ -10,6 +10,9 @@ namespace
 	// サウンドファイル名
 	const char* const kFileName[Sound::SoundId_Num] =
 	{
+		// BGM
+		"Sound/bgm_main.mp3",
+		// 効果音
 		"Sound/explosion.mp3",
 		"Sound/appear.mp3",
 	};
@@ -36,9 +39,26 @@ namespace Sound
 		}
 	}
 
-	// 効果音の再生
-	void play(int soundId)
+	// BGMの再生
+	void startBgm(SoundId id, int volume)
 	{
-		PlaySoundMem(m_soundHandle[soundId], DX_PLAYTYPE_BACK, true);
+		PlaySoundMem(m_soundHandle[id], DX_PLAYTYPE_BACK, true);
+		setVolume(id, volume);
+	}
+	void stopBgm(SoundId id)
+	{
+		StopSoundMem(m_soundHandle[id]);
+	}
+
+	// 効果音の再生
+	void play(SoundId id)
+	{
+		PlaySoundMem(m_soundHandle[id], DX_PLAYTYPE_BACK, true);
+	}
+
+	// 音量設定	0~255
+	void setVolume(SoundId id, int volume)
+	{
+		ChangeVolumeSoundMem(volume, m_soundHandle[id]);
 	}
 }

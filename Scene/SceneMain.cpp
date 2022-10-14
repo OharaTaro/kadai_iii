@@ -283,7 +283,11 @@ SceneBase* SceneMain::updateCount()
 		endWaitObject();
 		m_seq = Seq::Seq_Game;
 		m_seqFrame = 0;
+		m_endCount = 0;
+
+		Sound::startBgm(Sound::SoundId_BgmMain);
 	}
+	return this;
 }
 
 SceneBase* SceneMain::updateGame()
@@ -311,6 +315,11 @@ SceneBase* SceneMain::updateGame()
 	// 敵が全滅orプレイヤーが死んだらタイトルに戻る
 	if (!isExistPlayer() || (getEnemyNum() == 0))
 	{
+		int volume = 255;
+		volume -= m_endCount * 4;
+		if (volume < 0)	volume = 0;
+		Sound::setVolume(Sound::SoundId_BgmMain, volume);
+
 		m_endCount++;
 		if ((!isFading()) && (m_endCount >= kGameEndFadeOutStartFrame))
 		{
@@ -321,6 +330,7 @@ SceneBase* SceneMain::updateGame()
 			// 結果表示画面へ	ゲーム結果もここで渡しておく
 			SceneResult* pResult = new SceneResult;
 			pResult->setResult(isExistPlayer(), kEnemyNum - getEnemyNum());
+			Sound::stopBgm(Sound::SoundId_BgmMain);
 			return pResult;
 		}
 	}

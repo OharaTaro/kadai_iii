@@ -5,6 +5,10 @@ namespace Sound
 {
 	typedef enum SoundId
 	{
+		// BGM
+		SoundId_BgmMain,	// æ“ª‰æ–Ê‚ÌBGM
+
+		// Œø‰Ê‰¹
 		SoundId_PlayerExplosion,	// ƒvƒŒƒCƒ„[”š”­‰¹
 		SoundId_EnemyAppear,	// “G‚Ì“oê‰¹
 
@@ -15,6 +19,13 @@ namespace Sound
 	void load();
 	void unload();
 
+	// BGM‚ÌÄ¶
+	void startBgm(SoundId id, int volume = 255);
+	void stopBgm(SoundId id);
+
 	// Œø‰Ê‰¹‚ÌÄ¶
-	void play(int soundId);
+	void play(SoundId id);
+
+	// ‰¹—Êİ’è	0~255
+	void setVolume(SoundId id, int volume);
 }
