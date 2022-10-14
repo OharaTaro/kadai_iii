@@ -76,9 +76,9 @@ void Player::update()
 	{
 		m_pos.x = 0.0f;
 	}
-	if (m_pos.x > Game::kScreenWidth)
+	if (m_pos.x > Game::kScreenWidth - m_colSize.x)
 	{
-		m_pos.x = Game::kScreenWidth;
+		m_pos.x = Game::kScreenWidth - m_colSize.x;
 	}
 
 	// 待機中はショット撃てない
