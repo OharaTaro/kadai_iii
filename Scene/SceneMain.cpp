@@ -47,12 +47,17 @@ namespace
 	constexpr int kEnemyHNum = 7;	// 横方向の敵の数
 	constexpr int kEnemyVNum = 3;	// 縦方向の敵の数
 	constexpr int kEnemyNum = kEnemyHNum * kEnemyVNum;
+
+	// カウントダウン関連
+	constexpr int kCountDownWaitSec = 3;	// 待ち時間(秒)
+	constexpr int kCountDownWaitFrame = kCountDownWaitSec*60;	// 待ち時間(フレーム)
 }
 
 // ===============================================
 
 void SceneMain::init()
 {
+	// グラフィックデータの読み込み
 	for (auto& fileName : kGraphicFileNameList)
 	{
 		int handle = LoadGraph(fileName);
@@ -66,12 +71,6 @@ void SceneMain::init()
 		pPlayer->setGraph(m_graphicHandle[kGraphicFileData_Player]);
 		m_object.push_back(pPlayer);
 	}
-#if false	// 敵はゲーム中の登場演出で配置する
-	for (int i = 0; i < kEnemyNum; i++)
-	{
-		addStartEnemy(i);
-	}
-#endif
 
 	m_bgScroll = 0.0f;
 
@@ -83,6 +82,7 @@ void SceneMain::init()
 void SceneMain::end()
 {
 	endObject(m_object);
+	// グラフィックデータの解放
 	for (auto& handle : m_graphicHandle)
 	{
 		DeleteGraph(handle);
@@ -97,6 +97,8 @@ SceneBase* SceneMain::update()
 	{
 	case Seq::Seq_Wait:
 		return updateWait();
+	case Seq::Seq_Count:
+		return updateCount();
 	case Seq::Seq_Game:
 		return updateGame();
 	}
@@ -112,9 +114,17 @@ void SceneMain::draw()
 	// 背景
 	DrawGraphF(0, m_bgScroll, m_graphicHandle[kGraphicFileData_Bg], true);
 	DrawGraphF(0, m_bgScroll - Game::kScreenHeight , m_graphicHandle[kGraphicFileData_Bg], true);
-
+	// ゲームオブジェクト
 	drawObject(m_object);
 
+	// カウントダウン
+	if( m_seq == Seq::Seq_Count )
+	{
+		drawCountDown();
+	}
+
+	// デバッグ表示
+	SetFontSize(16);
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "敵の数:%d", getEnemyNum());
 	DrawFormatString(0, 32, GetColor(255, 255, 255), "オブジェクトの数:%d", m_object.size());
 
@@ -128,9 +138,7 @@ void SceneMain::addStartEnemy(int no)
 	pEnemy->init();
 	pEnemy->setMain(this);
 	pEnemy->setGraph(m_graphicHandle[kGraphicFileData_Enemy]);
-	Vec2 pos;
-	pos.x = static_cast<float>((no % kEnemyHNum) * 64 + 128);
-	pos.y = static_cast<float>((no / kEnemyHNum) * 48 + 60);
+	Vec2 pos = getEnemyStartPos(no);
 	pEnemy->setStart(pos);
 	m_object.push_back(pEnemy);
 	// 登場演出
@@ -231,12 +239,7 @@ SceneBase* SceneMain::updateWait()
 	SceneBase::updateFade();
 	if (isFading())	return this;	// フェードイン、アウト中は動かない
 	// 背景のスクロール
-	m_bgScroll += 1.0f;
-	if (m_bgScroll > Game::kScreenHeight)
-	{
-		m_bgScroll -= Game::kScreenHeight;
-	}
-
+	updateBg();
 	// 各オブジェクトの処理
 	updateObject(m_object);
 
@@ -258,11 +261,28 @@ SceneBase* SceneMain::updateWait()
 	if ((m_seqFrame >= 300) &&
 		(getEnemyNum() >= kEnemyNum))
 	{
-		endWait();
-		m_seq = Seq::Seq_Game;
+		m_seq = Seq::Seq_Count;
 		m_seqFrame = 0;
 	}
 	return this;
+}
+
+SceneBase* SceneMain::updateCount()
+{
+	SceneBase::updateFade();
+	if (isFading())	return this;	// フェードイン、アウト中は動かない
+	// 背景のスクロール
+	updateBg();
+	// 各オブジェクトの処理
+	updateObject(m_object);
+
+	m_seqFrame++;
+	if (m_seqFrame >= kCountDownWaitFrame)
+	{
+		endWaitObject();
+		m_seq = Seq::Seq_Game;
+		m_seqFrame = 0;
+	}
 }
 
 SceneBase* SceneMain::updateGame()
@@ -270,12 +290,7 @@ SceneBase* SceneMain::updateGame()
 	SceneBase::updateFade();
 	if (isFading())	return this;	// フェードイン、アウト中は動かない
 	// 背景のスクロール
-	m_bgScroll += 1.0f;
-	if (m_bgScroll > Game::kScreenHeight)
-	{
-		m_bgScroll -= Game::kScreenHeight;
-	}
-
+	updateBg();
 	// 各オブジェクトの処理
 	updateObject(m_object);
 
@@ -311,7 +326,30 @@ SceneBase* SceneMain::updateGame()
 	return this;
 }
 
-void SceneMain::endWait()
+void SceneMain::drawCountDown() const
+{
+//	int fonstSize = 60-(m_seqFrame % 60) + 64;
+	int fonstSize = 64;
+
+	SetFontSize(fonstSize);
+	int dispNo = (kCountDownWaitFrame - m_seqFrame) / 60 + 1;
+	if (dispNo <= 0)	dispNo = 1;
+	if (dispNo > 3)		dispNo = 3;
+	int width = GetDrawFormatStringWidth("&d", dispNo);
+	int dispX = Game::kScreenWidth / 2 - width / 4;
+	int dispY = Game::kScreenHeight / 2 - fonstSize / 2;
+	DrawFormatString(dispX, dispY, GetColor(0, 0, 0), "%d", dispNo);
+}
+
+Vec2 SceneMain::getEnemyStartPos(int index)
+{
+	Vec2 pos;
+	pos.x = static_cast<float>((index % kEnemyHNum) * 64 + 128);
+	pos.y = static_cast<float>((index / kEnemyHNum) * 48 + 60);
+	return pos;
+}
+
+void SceneMain::endWaitObject()
 {
 	for (const auto& pObj : m_object)
 	{
@@ -323,6 +361,15 @@ void SceneMain::endWait()
 		{
 			dynamic_cast<Player*>(pObj)->setWait(false);
 		}
+	}
+}
+
+void SceneMain::updateBg()
+{
+	m_bgScroll += 1.0f;
+	if (m_bgScroll > Game::kScreenHeight)
+	{
+		m_bgScroll -= Game::kScreenHeight;
 	}
 }
 

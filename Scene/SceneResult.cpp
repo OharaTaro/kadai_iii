@@ -20,6 +20,7 @@ namespace
 void SceneResult::init()
 {
 	m_textBlinkFrame = 0;
+	SetFontSize(16);
 }
 
 void SceneResult::end()

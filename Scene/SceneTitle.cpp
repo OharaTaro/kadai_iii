@@ -18,6 +18,7 @@ namespace
 void SceneTitle::init()
 {
 	m_textBlinkFrame = 0;
+	SetFontSize(16);
 }
 
 void SceneTitle::end()

@@ -50,16 +50,26 @@ private:
 	enum class Seq
 	{
 		Seq_Wait,	// ゲーム開始待ち
+		Seq_Count,	// カウントダウン
 		Seq_Game,	// ゲーム本体
 	};
 
 private:
 	// 各シーケンスごとのupdate処理
 	SceneBase* updateWait();
+	SceneBase* updateCount();
 	SceneBase* updateGame();
 
-	// Waitシーケンスの終了処理
-	void endWait();
+	// カウントダウン表示
+	void drawCountDown() const;
+
+	// 敵の番号から初期位置を取得する
+	Vec2 getEnemyStartPos(int index);
+	// プレイヤー、敵の待機状態を解除
+	void endWaitObject();
+
+	// 各シーケンス共通処理
+	void updateBg();	// 背景のスクロール
 
 	// list<ObjectBase*>への各処理
 	void updateObject(std::list<ObjectBase*>& obj);
