@@ -10,6 +10,8 @@ namespace Sound
 		SoundId_BgmGameover,	// 失敗画面のBGM
 
 		// 効果音
+		SoundId_PlayerShot,		// プレイヤー発射音
+		SoundId_EnemyShot,		// 敵発射音
 		SoundId_PlayerExplosion,		// プレイヤー爆発音
 		SoundId_PlayerExplosionLong,	// 爆発音(長い)
 		SoundId_EnemyAppear,			// 敵の登場音

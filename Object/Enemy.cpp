@@ -96,6 +96,7 @@ void Enemy::update()
 		if (m_pMain->isEnemyShotEnable(getShotStartPos()))
 		{
 			m_pMain->addEnemyShot(getShotStartPos());
+			Sound::play(Sound::SoundId_EnemyShot);
 		}
 		m_shotInterval = 120;
 	}

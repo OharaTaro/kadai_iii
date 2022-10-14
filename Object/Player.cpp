@@ -90,6 +90,7 @@ void Player::update()
 	{
 		m_pMain->addPlayerShot(getShotStartPos());
 		m_shotInterval = 0;
+		Sound::play(Sound::SoundId_PlayerShot);
 	}
 }
 

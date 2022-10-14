@@ -14,6 +14,8 @@ namespace
 		"Sound/bgm_main.mp3",
 		"Sound/bgm_gameover.mp3",
 		// Œø‰Ê‰¹
+		"Sound/playerShot.wav",
+		"Sound/enemyShot.wav",
 		"Sound/explosion.mp3",
 		"Sound/explosion_Long.mp3",
 		"Sound/appear.mp3",
