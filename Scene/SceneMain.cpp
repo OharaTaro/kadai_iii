@@ -328,8 +328,7 @@ SceneBase* SceneMain::updateGame()
 
 void SceneMain::drawCountDown() const
 {
-//	int fonstSize = 60-(m_seqFrame % 60) + 64;
-	int fonstSize = 64;
+	int fonstSize = 128;
 
 	SetFontSize(fonstSize);
 	int dispNo = (kCountDownWaitFrame - m_seqFrame) / 60 + 1;
@@ -338,6 +337,9 @@ void SceneMain::drawCountDown() const
 	int width = GetDrawFormatStringWidth("&d", dispNo);
 	int dispX = Game::kScreenWidth / 2 - width / 4;
 	int dispY = Game::kScreenHeight / 2 - fonstSize / 2;
+	dispX += GetRand(8) - 4;
+	dispY += GetRand(8) - 4;
+
 	DrawFormatString(dispX, dispY, GetColor(0, 0, 0), "%d", dispNo);
 }
 
