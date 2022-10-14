@@ -6,11 +6,13 @@ namespace Sound
 	typedef enum SoundId
 	{
 		// BGM
-		SoundId_BgmMain,	// 先頭画面のBGM
+		SoundId_BgmMain,		// 先頭画面のBGM
+		SoundId_BgmGameover,	// 失敗画面のBGM
 
 		// 効果音
-		SoundId_PlayerExplosion,	// プレイヤー爆発音
-		SoundId_EnemyAppear,	// 敵の登場音
+		SoundId_PlayerExplosion,		// プレイヤー爆発音
+		SoundId_PlayerExplosionLong,	// 爆発音(長い)
+		SoundId_EnemyAppear,			// 敵の登場音
 
 		SoundId_Num
 	}SoundId;

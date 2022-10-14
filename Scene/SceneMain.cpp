@@ -277,6 +277,11 @@ SceneBase* SceneMain::updateCount()
 	// 各オブジェクトの処理
 	updateObject(m_object);
 
+	if (!(m_seqFrame % 60))
+	{
+		Sound::play(Sound::SoundId_PlayerExplosion);
+	}
+
 	m_seqFrame++;
 	if (m_seqFrame >= kCountDownWaitFrame)
 	{
@@ -285,6 +290,7 @@ SceneBase* SceneMain::updateCount()
 		m_seqFrame = 0;
 		m_endCount = 0;
 
+		Sound::play(Sound::SoundId_PlayerExplosionLong);
 		Sound::startBgm(Sound::SoundId_BgmMain);
 	}
 	return this;
