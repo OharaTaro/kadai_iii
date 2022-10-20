@@ -6,6 +6,8 @@ class SceneResult : public SceneBase
 public:
 	SceneResult()
 	{
+		m_hBgSuccess = -1;
+		m_hBgFail = -1;
 		m_isSuccess = false;
 		m_destroyNum = 0;
 		m_textBlinkFrame = 0;
