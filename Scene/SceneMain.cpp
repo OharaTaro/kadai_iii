@@ -81,7 +81,7 @@ void SceneMain::init()
 
 void SceneMain::end()
 {
-	endObject(m_object);
+	endObject();
 	// グラフィックデータの解放
 	for (auto& handle : m_graphicHandle)
 	{
@@ -115,7 +115,7 @@ void SceneMain::draw()
 	DrawGraphF(0, m_bgScroll, m_graphicHandle[kGraphicFileData_Bg], true);
 	DrawGraphF(0, m_bgScroll - Game::kScreenHeight , m_graphicHandle[kGraphicFileData_Bg], true);
 	// ゲームオブジェクト
-	drawObject(m_object);
+	drawObject();
 
 	// カウントダウン
 	if( m_seq == Seq::Seq_Count )
@@ -242,7 +242,7 @@ SceneBase* SceneMain::updateWait()
 	// 背景のスクロール
 	updateBg();
 	// 各オブジェクトの処理
-	updateObject(m_object);
+	updateObject();
 
 	// 敵の登場処理
 	m_seqFrame++;
@@ -275,7 +275,7 @@ SceneBase* SceneMain::updateCount()
 	// 背景のスクロール
 	updateBg();
 	// 各オブジェクトの処理
-	updateObject(m_object);
+	updateObject();
 
 	if (!(m_seqFrame % 60))
 	{
@@ -303,7 +303,7 @@ SceneBase* SceneMain::updateGame()
 	// 背景のスクロール
 	updateBg();
 	// 各オブジェクトの処理
-	updateObject(m_object);
+	updateObject();
 
 	// 当たり判定
 	for (auto& hitObj : m_object)
@@ -421,17 +421,17 @@ void SceneMain::updateBg()
 	}
 }
 
-void SceneMain::updateObject(std::list<ObjectBase*>& obj)
+void SceneMain::updateObject()
 {
-	std::list<ObjectBase*>::iterator it = obj.begin();
-	while (it != obj.end())
+	std::list<ObjectBase*>::iterator it = m_object.begin();
+	while (it != m_object.end())
 	{
 		auto pObj = (*it);
 		pObj->update();
 		if (!pObj->isExist())
 		{
 			delete pObj;
-			it = obj.erase(it);
+			it = m_object.erase(it);
 		}
 		else
 		{
@@ -439,19 +439,19 @@ void SceneMain::updateObject(std::list<ObjectBase*>& obj)
 		}
 	}
 }
-void SceneMain::drawObject(std::list<ObjectBase*>& obj)
+void SceneMain::drawObject()
 {
-	for (auto& pObj : obj)
+	for (auto& pObj : m_object)
 	{
 		pObj->draw();
 	}
 }
-void SceneMain::endObject(std::list<ObjectBase*>& obj)
+void SceneMain::endObject()
 {
-	for (auto& pObj : obj)
+	for (auto& pObj : m_object)
 	{
 		pObj->end();
 		delete pObj;
 	}
-	obj.clear();
+	m_object.clear();
 }

@@ -75,9 +75,9 @@ private:
 	void updateBg();	// 背景のスクロール
 
 	// list<ObjectBase*>への各処理
-	void updateObject(std::list<ObjectBase*>& obj);
-	void drawObject(std::list<ObjectBase*>& obj);
-	void endObject(std::list<ObjectBase*>& obj);
+	void updateObject();
+	void drawObject();
+	void endObject();
 
 private:
 	// グラフィックハンドル
