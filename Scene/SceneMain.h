@@ -67,8 +67,6 @@ private:
 	Vec2 getEnemyStartPos(int index);
 	// プレイヤー、敵をの待機設定
 	void setWaitObject( bool isWait );
-	// プレイヤー、敵の待機状態を解除
-	void endWaitObject();
 
 	// ショットをすべて消す	ゲーム終了時に行う
 	void eraseShot();
