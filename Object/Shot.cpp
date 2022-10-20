@@ -19,12 +19,14 @@ namespace
 	
 }
 
-Shot::Shot()
+Shot::Shot() :
+	m_hGraph(-1),
+	m_vec(0.0f, 0.0f),
+	m_myType(ColType::kPlayerShot),
+	m_targetType(ColType::kEnemy)
 {
-	m_hGraph = 0;
-	m_myType = ColType::kPlayerShot;
-	m_targetType = ColType::kEnemy;
 }
+
 Shot::~Shot()
 {
 
