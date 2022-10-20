@@ -13,6 +13,10 @@ namespace
 
 	// 移動情報
 	constexpr int kMoveInterval = 30;	// 移動を行う間隔(フレーム)
+	constexpr float kMoveSpeed = 8.0f;	// 1回の移動量
+
+	// 弾の生成間隔
+	constexpr int kShotInterval = 120;
 
 	// アニメーション情報
 	constexpr int kAnimNum = 4;		// アニメのコマ数
@@ -69,19 +73,19 @@ void Enemy::update()
 		m_moveOffsetCount += m_moveDir;
 		if (m_moveDir > 0)	// 右方向への移動
 		{
-			m_pos.x += 8.0f;
+			m_pos.x += kMoveSpeed;
 			if (m_moveOffsetCount >= 8)
 			{
-				m_pos.y += 8.0f;
+				m_pos.y += kMoveSpeed;
 				m_moveDir = -1;
 			}
 		}
 		if (m_moveDir < 0)	// 左方向への移動
 		{
-			m_pos.x -= 8.0f;
+			m_pos.x -= kMoveSpeed;
 			if (m_moveOffsetCount <= -8)
 			{
-				m_pos.y += 8.0f;
+				m_pos.y += kMoveSpeed;
 				m_moveDir = 1;
 			}
 		}
@@ -98,7 +102,7 @@ void Enemy::update()
 			m_pMain->addEnemyShot(getShotStartPos());
 			Sound::play(Sound::SoundId_EnemyShot);
 		}
-		m_shotInterval = 120;
+		m_shotInterval = kShotInterval;
 	}
 }
 
@@ -127,7 +131,7 @@ void Enemy::setStart(Vec2 pos)
 	m_pos -= m_colSize / 2;
 
 	m_isWaiting = true;
-	m_shotInterval = 120;
+	m_shotInterval = kShotInterval;
 }
 
 void Enemy::beHit()
