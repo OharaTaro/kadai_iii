@@ -72,11 +72,15 @@ void SceneMain::init()
 		m_object.push_back(pPlayer);
 	}
 
+	m_screenHandle = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, 0);
+
 	m_bgScroll = 0.0f;
 
 	m_seq = Seq::Seq_Wait;
 	m_seqFrame = 0;
 	m_endCount = 0;
+	m_shakeX = 0;
+	m_shakeY = 0;
 }
 
 void SceneMain::end()
@@ -88,6 +92,7 @@ void SceneMain::end()
 		DeleteGraph(handle);
 		handle = -1;
 	}
+	DeleteGraph(m_screenHandle);
 	m_graphicHandle.clear();
 }
 
@@ -108,6 +113,8 @@ SceneBase* SceneMain::update()
 
 void SceneMain::draw()
 {
+	SetDrawScreen(m_screenHandle);
+
 	// 背景色
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, kBgColor, true);
 
@@ -122,6 +129,11 @@ void SceneMain::draw()
 	{
 		drawCountDown();
 	}
+
+	// 通常描画に戻す
+	SetDrawScreen(DX_SCREEN_BACK);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, kBgColor, true);
+	DrawGraph(m_shakeX, m_shakeX, m_screenHandle, false);
 
 	// デバッグ表示
 	SetFontSize(16);
@@ -331,6 +343,12 @@ SceneBase* SceneMain::updateGame()
 		volume -= m_endCount * 4;
 		if (volume < 0)	volume = 0;
 		Sound::setVolume(Sound::SoundId_BgmMain, volume);
+
+		if (!isExistPlayer())
+		{
+			m_shakeX = GetRand(32) - 32;
+			m_shakeY = GetRand(32) - 32;
+		}
 
 		m_endCount++;
 		if ((!isFading()) && (m_endCount >= kGameEndFadeOutStartFrame))

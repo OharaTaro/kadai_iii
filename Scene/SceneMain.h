@@ -8,12 +8,16 @@
 class SceneMain : public SceneBase
 {
 public:
-	SceneMain()
+	SceneMain():
+		m_screenHandle(-1),
+		m_bgScroll(0.0f),
+		m_seq(Seq::Seq_Wait),
+		m_seqFrame(0),
+		m_endCount(0),
+		m_shakeX(0),
+		m_shakeY(0)
 	{
-		m_bgScroll = 0.0f;
-		m_seq = Seq::Seq_Wait;
-		m_seqFrame = 0;
-		m_endCount = 0;
+		
 	}
 	virtual ~SceneMain() {}
 
@@ -82,6 +86,7 @@ private:
 private:
 	// グラフィックハンドル
 	std::vector<int>	m_graphicHandle;
+	int					m_screenHandle;
 
 	// ゲーム中に登場する物体
 	std::list<ObjectBase*>	m_object;
@@ -94,4 +99,8 @@ private:
 	int m_seqFrame;
 	// ゲーム終了後のフレーム待ち
 	int m_endCount;
+
+	// ゲームオーバー時の画面揺れ
+	int m_shakeX;
+	int m_shakeY;
 };
